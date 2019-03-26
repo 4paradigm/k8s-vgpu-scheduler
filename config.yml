@@ -1,0 +1,5 @@
+ImageRepository: @IMAGE_REPO
+KubernetesVersion: @IMAGE_VERSION
+Networking:
+    PodSubnet: 10.244.0.0/16
+

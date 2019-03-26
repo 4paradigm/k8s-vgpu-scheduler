@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nvidia-deployment
+spec:
+  replicas: 32
+  selector:
+    matchLabels:
+      name: nvidia-gpu-deploy
+  template:
+    metadata:
+      labels:
+        name: nvidia-gpu-deploy
+
+    spec:
+      containers:
+      - name: cuda-container
+        image: ubuntu
+        command: ["sleep"]
+        args: ["100000"]
+        resources:
+          limits:
+            nvidia.com/gpu: 1
