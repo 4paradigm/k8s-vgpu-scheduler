@@ -22,9 +22,9 @@ DOCKER   ?= docker
 ifeq ($(IMAGE),)
 REGISTRY ?= 4pdosc
 #REGISTRY ?= m7-ieg-pico-test01:5000
-IMAGE := $(REGISTRY)/k8s-device-plugin-test
+IMAGE := $(REGISTRY)/k8s-device-plugin
 endif
-VERSION  ?= v0.9.1
+VERSION  ?= v0.9.0
 
 GOLANG_VERSION ?= 1.15.8
 
