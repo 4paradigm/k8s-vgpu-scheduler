@@ -47,7 +47,7 @@ spec:
       priorityClassName: "system-node-critical"
       containers:
       - image: 4pdosc/k8s-device-plugin:latest
-        #- image: m7-ieg-pico-test01:5000/k8s-device-plugin-test:v0.9.0-ubuntu20.04
+        # - image: m7-ieg-pico-test01:5000/k8s-device-plugin-test:v0.9.0-ubuntu20.04
         imagePullPolicy: Always
         name: nvidia-device-plugin-ctr
         args: ["--fail-on-init-error=false", "--device-split-count=3", "--device-memory-scaling=3", "--device-cores-scaling=3"]
