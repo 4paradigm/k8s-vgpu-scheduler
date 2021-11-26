@@ -62,7 +62,7 @@ type migStrategyMixed struct{}
 func (s *migStrategyNone) GetPlugins() []*NvidiaDevicePlugin {
 	return []*NvidiaDevicePlugin{
 		NewNvidiaDevicePlugin(
-			"nvidia.com/gpu",
+			"nvidia.com/vgpu",
 			NewGpuDeviceManager(false), // Enumerate device even if MIG enabled
 			"NVIDIA_VISIBLE_DEVICES",
 			gpuallocator.NewBestEffortPolicy(),
@@ -126,7 +126,7 @@ func (s *migStrategySingle) GetPlugins() []*NvidiaDevicePlugin {
 
 	return []*NvidiaDevicePlugin{
 		NewNvidiaDevicePlugin(
-			"nvidia.com/gpu",
+			"nvidia.com/vgpu",
 			NewMigDeviceManager(s, "gpu"),
 			"NVIDIA_VISIBLE_DEVICES",
 			gpuallocator.Policy(nil),
@@ -187,7 +187,7 @@ func (s *migStrategyMixed) GetPlugins() []*NvidiaDevicePlugin {
 
 	plugins := []*NvidiaDevicePlugin{
 		NewNvidiaDevicePlugin(
-			"nvidia.com/gpu",
+			"nvidia.com/vgpu",
 			NewGpuDeviceManager(true),
 			"NVIDIA_VISIBLE_DEVICES",
 			gpuallocator.NewBestEffortPolicy(),

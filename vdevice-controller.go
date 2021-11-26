@@ -1,15 +1,16 @@
 package main
 
 import (
-	"k8s.io/apimachinery/pkg/labels"
-	pluginapi "k8s.io/kubelet/pkg/apis/deviceplugin/v1beta1"
-	"k8s.io/kubernetes/pkg/kubelet/cm/devicemanager/checkpoint"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
 	"sync"
 	"time"
+
+	"k8s.io/apimachinery/pkg/labels"
+	pluginapi "k8s.io/kubelet/pkg/apis/deviceplugin/v1beta1"
+	"k8s.io/kubernetes/pkg/kubelet/cm/devicemanager/checkpoint"
 
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -69,7 +70,7 @@ func (m *VDeviceController) updateFromCheckpoint() error {
 	pods, err := m.podLister.Pods("").List(labels.Everything())
 	podDevices, _ := cp.GetData()
 	for _, pde := range podDevices {
-		if pde.ResourceName != "nvidia.com/gpu" {
+		if pde.ResourceName != "nvidia.com/vgpu" {
 			continue
 		}
 		allocResp := &pluginapi.ContainerAllocateResponse{}

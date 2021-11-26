@@ -341,7 +341,7 @@ func (m *NvidiaDevicePlugin) Allocate(ctx context.Context, reqs *pluginapi.Alloc
 				match := true
 				minus := 0
 				for ctridx, ctr := range cursor.Spec.Containers {
-					nvcount, ok := ctr.Resources.Limits["nvidia.com/gpu"]
+					nvcount, ok := ctr.Resources.Limits["nvidia.com/vgpu"]
 					if !ok {
 						minus++
 						continue
@@ -374,7 +374,7 @@ func (m *NvidiaDevicePlugin) Allocate(ctx context.Context, reqs *pluginapi.Alloc
 		if len(monitorMode) > 0 {
 			for {
 				ctrs := targetpod.Spec.Containers[reqidx+addnum]
-				_, ok := ctrs.Resources.Limits["nvidia.com/gpu"]
+				_, ok := ctrs.Resources.Limits["nvidia.com/vgpu"]
 				if !ok {
 					addnum++
 					continue
