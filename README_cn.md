@@ -100,7 +100,7 @@ $ kubectl logs [pod id]
 
 ## 产品限制
 
-- 分配到节点上任务所需要的vGPU数量，不能大于节点实际GPU数量
+- 分配到节点上任务所需要的vGPU数量，不能大于节点实际GPU数量，你可以使用[vGPU调度器](https://github.com/4paradigm/k8s-vgpu-scheduler)来避免这个限制
 
 ## 已知问题
 

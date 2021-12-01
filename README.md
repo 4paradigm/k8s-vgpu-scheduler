@@ -95,7 +95,7 @@ $ kubectl logs [pod id]
 
 ## Limitaions
 
-- The VGPUs assigned to this node can't exceed the number of physical GPU card, otherwise task could fail
+- The VGPUs assigned to one task can't exceed the number of physical GPU card on the node that running that task, otherwise task could fail. In order to avoid this limitation, try this [vgpu-scheduler](https://github.com/4paradigm/k8s-vgpu-scheduler).
 
 ## Experimental Features
 
