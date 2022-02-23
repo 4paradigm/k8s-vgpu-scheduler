@@ -54,10 +54,13 @@ spec:
         env:
         - name: PCIBUSFILE
           value: "/usr/local/vgpu/pciinfo.vgpu"
+        - name: NVIDIA_MIG_MONITOR_DEVICES
+          value: all
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
             drop: ["ALL"]
+            add: ["SYS_ADMIN"]
         volumeMounts:
           - name: device-plugin
             mountPath: /var/lib/kubelet/device-plugins
