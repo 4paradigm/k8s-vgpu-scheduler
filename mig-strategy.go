@@ -165,6 +165,7 @@ func (s *migStrategySingle) MatchesResource(mig *nvml.Device, resource string) b
 
 // migStrategyMixed
 func (s *migStrategyMixed) GetPlugins() []*NvidiaDevicePlugin {
+	log.Println("migStrategyMixed:GetPlugins")
 	devices := NewMIGCapableDevices()
 
 	if err := devices.AssertAllMigEnabledDevicesAreValid(); err != nil {
@@ -201,6 +202,7 @@ func (s *migStrategyMixed) GetPlugins() []*NvidiaDevicePlugin {
 			"NVIDIA_VISIBLE_DEVICES",
 			gpuallocator.Policy(nil),
 			pluginapi.DevicePluginPath+"nvidia-"+resource+".sock")
+		plugin.migStrategy = "mixed"
 		plugins = append(plugins, plugin)
 	}
 

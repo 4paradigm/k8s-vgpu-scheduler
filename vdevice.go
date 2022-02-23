@@ -18,6 +18,9 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"strings"
+
 	"github.com/NVIDIA/gpu-monitoring-tools/bindings/go/nvml"
 	pluginapi "k8s.io/kubelet/pkg/apis/deviceplugin/v1beta1"
 )
@@ -33,6 +36,14 @@ type VDevice struct {
 func Device2VDevice(devices []*Device) []*VDevice {
 	var vdevices []*VDevice
 	for _, d := range devices {
+		log.Println("uuid=", d.ID)
+		if strings.Contains(d.ID, "MIG") {
+			vd := &VDevice{Device: d.Device, dev: d, memory: 0}
+			vd.ID = fmt.Sprintf("%v-%v", d.ID, 0)
+			vd.memory = 0
+			vdevices = append(vdevices, vd)
+			continue
+		}
 		dev, err := nvml.NewDeviceByUUID(d.ID)
 		check(err)
 		memory := uint64(float64(*dev.Memory) * deviceMemoryScalingFlag / float64(deviceSplitCountFlag))

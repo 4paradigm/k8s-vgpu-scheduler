@@ -53,13 +53,13 @@ func main() {
 
 	migStrategyFlag = MigStrategyNone
 	c.Flags = []cli.Flag{
-		//&cli.StringFlag{
-		//	Name:        "mig-strategy",
-		//	Value:       "none",
-		//	Usage:       "the desired strategy for exposing MIG devices on GPUs that support it:\n\t\t[none | single | mixed]",
-		//	Destination: &migStrategyFlag,
-		//	EnvVars:     []string{"MIG_STRATEGY"},
-		//},
+		&cli.StringFlag{
+			Name:        "mig-strategy",
+			Value:       "none",
+			Usage:       "the desired strategy for exposing MIG devices on GPUs that support it:\n\t\t[none | single | mixed]",
+			Destination: &migStrategyFlag,
+			EnvVars:     []string{"MIG_STRATEGY"},
+		},
 		&cli.BoolFlag{
 			Name:        "fail-on-init-error",
 			Value:       true,

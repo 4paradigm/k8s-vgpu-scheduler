@@ -65,6 +65,7 @@ type NvidiaDevicePlugin struct {
 	deviceListEnvvar string
 	allocatePolicy   gpuallocator.Policy
 	socket           string
+	migStrategy      string
 
 	server            *grpc.Server
 	cachedDevices     []*Device
@@ -82,6 +83,7 @@ func NewNvidiaDevicePlugin(resourceName string, resourceManager ResourceManager,
 		deviceListEnvvar: deviceListEnvvar,
 		allocatePolicy:   allocatePolicy,
 		socket:           socket,
+		migStrategy:      "none",
 
 		// These will be reinitialized every
 		// time the plugin server is restarted.
@@ -95,7 +97,10 @@ func NewNvidiaDevicePlugin(resourceName string, resourceManager ResourceManager,
 
 func (m *NvidiaDevicePlugin) initialize() {
 	m.cachedDevices = m.Devices()
-	m.vDevices = Device2VDevice(m.cachedDevices)
+	log.Println("migstrategy=", m.migStrategy)
+	if strings.Compare(m.migStrategy, "none") == 0 {
+		m.vDevices = Device2VDevice(m.cachedDevices)
+	}
 	if enableLegacyPreferredFlag && m.allocatePolicy != nil {
 		deviceIDs := make([]string, len(m.vDevices))
 		for i, v := range m.vDevices {
@@ -266,6 +271,9 @@ func (m *NvidiaDevicePlugin) ListAndWatch(e *pluginapi.Empty, s pluginapi.Device
 func (m *NvidiaDevicePlugin) GetPreferredAllocation(ctx context.Context, r *pluginapi.PreferredAllocationRequest) (*pluginapi.PreferredAllocationResponse, error) {
 
 	response := &pluginapi.PreferredAllocationResponse{}
+	if strings.Compare(m.migStrategy, "mixed") == 0 {
+		return nil, nil
+	}
 	// get device
 	for _, req := range r.ContainerRequests {
 		availableVDev, err := VDevicesByIDs(m.vDevices, req.AvailableDeviceIDs)
@@ -306,19 +314,54 @@ func (m *NvidiaDevicePlugin) GetPreferredAllocation(ctx context.Context, r *plug
 		}
 
 		response.ContainerResponses = append(response.ContainerResponses, resp)
-		if verboseFlag > 5 {
-			log.Printf("Debug: preferred allocation %d: [%s] -> [%s]\n",
-				req.AllocationSize,
-				strings.Join(req.AvailableDeviceIDs, ","),
-				strings.Join(deviceIds, ","))
-		}
+		//if verboseFlag > 5 {
+		log.Printf("Debug: preferred allocation %d: [%s] -> [%s]\n",
+			req.AllocationSize,
+			strings.Join(req.AvailableDeviceIDs, ","),
+			strings.Join(deviceIds, ","))
+		//}
 	}
 	//return nil, fmt.Errorf("Not implemented")
 	return response, nil
 }
 
+// MIGAllocate which return list of MIGdevices.
+func (m *NvidiaDevicePlugin) MIGAllocate(ctx context.Context, reqs *pluginapi.AllocateRequest) (*pluginapi.AllocateResponse, error) {
+	responses := pluginapi.AllocateResponse{}
+	for _, req := range reqs.ContainerRequests {
+		for _, id := range req.DevicesIDs {
+			if !m.deviceExists(id) {
+				return nil, fmt.Errorf("invalid allocation request for '%s': unknown device: %s", m.resourceName, id)
+			}
+		}
+
+		response := pluginapi.ContainerAllocateResponse{}
+
+		uuids := req.DevicesIDs
+		deviceIDs := m.deviceIDsFromUUIDs(uuids)
+
+		if deviceListStrategyFlag == DeviceListStrategyEnvvar {
+			response.Envs = m.apiEnvs(m.deviceListEnvvar, deviceIDs)
+		}
+		if deviceListStrategyFlag == DeviceListStrategyVolumeMounts {
+			response.Envs = m.apiEnvs(m.deviceListEnvvar, []string{deviceListAsVolumeMountsContainerPathRoot})
+			response.Mounts = m.apiMounts(deviceIDs)
+		}
+		if passDeviceSpecsFlag {
+			response.Devices = m.apiDeviceSpecs(nvidiaDriverRootFlag, uuids)
+		}
+
+		responses.ContainerResponses = append(responses.ContainerResponses, &response)
+	}
+
+	return &responses, nil
+}
+
 // Allocate which return list of devices.
 func (m *NvidiaDevicePlugin) Allocate(ctx context.Context, reqs *pluginapi.AllocateRequest) (*pluginapi.AllocateResponse, error) {
+	if strings.Compare(m.migStrategy, "mixed") == 0 {
+		return m.MIGAllocate(ctx, reqs)
+	}
 	monitorMode := os.Getenv("VGPU_MONITOR_MODE")
 	targetpod := v1.Pod{}
 	if len(monitorMode) > 0 {
@@ -532,9 +575,15 @@ func (m *NvidiaDevicePlugin) deviceIDsFromUUIDs(uuids []string) []string {
 
 func (m *NvidiaDevicePlugin) apiDevices() []*pluginapi.Device {
 	var pdevs []*pluginapi.Device
-	for _, d := range m.vDevices {
-		d.Health = d.dev.Health
-		pdevs = append(pdevs, &d.Device)
+	if strings.Compare(m.migStrategy, "none") == 0 {
+		for _, d := range m.vDevices {
+			d.Health = d.dev.Health
+			pdevs = append(pdevs, &d.Device)
+		}
+	} else {
+		for _, d := range m.cachedDevices {
+			pdevs = append(pdevs, &d.Device)
+		}
 	}
 	return pdevs
 }
