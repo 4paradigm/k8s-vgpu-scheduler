@@ -27,7 +27,7 @@ English version|[中文版](README_cn.md)
 
 ## About
 
-The **vGPU device plugin** is based on NVIDIA device plugin([NVIDIA/k8s-device-plugin](https://github.com/NVIDIA/k8s-device-plugin)), and on the basis of retaining the official features, it splits the physical GPU, and limits the memory and computing unit, thereby simulating multiple small vGPU cards. In the k8s cluster, scheduling is performed based on these splited vGPUs, so that different containers can safely share the same physical GPU and improve GPU utilization. In addition, the plug-in can virtualize the device memory (the used device memory can exceed the physical device memory), run some tasks with large device memory requirements, or increase the number of shared tasks. You can refer to [the benchmarks report](#benchmarks).
+The **vGPU device plugin** is based on NVIDIA device plugin([NVIDIA/k8s-device-plugin](https://github.com/NVIDIA/k8s-device-plugin)), and on the basis of retaining the official features, it splits the physical GPU, and limits the memory and computing unit, thereby simulating multiple small vGPU cards. In the k8s cluster, scheduling is performed based on these split vGPUs, so that different containers can safely share the same physical GPU and improve GPU utilization. In addition, the plug-in can virtualize the device memory (the used device memory can exceed the physical device memory), run some tasks with large device memory requirements, or increase the number of shared tasks. You can refer to [the benchmarks report](#benchmarks).
 
 ## When to use
 
@@ -46,11 +46,11 @@ Three instances from ai-benchmark have been used to evaluate vGPU-device-plugin 
 | GPU Type           | Tesla V100                                             |
 | GPU Num            | 2                                                      |
 
-| Test instance |                         description                         |
-| ------------- | :---------------------------------------------------------: |
-| nvidia-device-plugin      |               k8s + nvidia k8s-device-plugin                |
-| vGPU-device-plugin        | k8s + VGPU k8s-device-plugin，without virtual device memory |
-| vGPU-device-plugin(virtual device memory) |  k8s + VGPU k8s-device-plugin，with virtual device memory   |
+| Test instance |                        description                         |
+| ------------- |:----------------------------------------------------------:|
+| nvidia-device-plugin      |               k8s + nvidia k8s-device-plugin               |
+| vGPU-device-plugin        | k8s + vGPU k8s-device-plugin，without virtual device memory |
+| vGPU-device-plugin(virtual device memory) |  k8s + vGPU k8s-device-plugin，with virtual device memory   |
 
 Test Cases:
 
@@ -170,14 +170,14 @@ $ wget https://raw.githubusercontent.com/4paradigm/k8s-device-plugin/master/nvid
 In this Daemonset file, you can see the container `nvidia-device-plugin-ctr` takes four optional arguments to customize your vGPU support:
 
 * `fail-on-init-error:`  
-  Boolean type, by default: true. When set to true, the failOnInitError flag fails the plugin if an error is encountered during initialization. When set to false, it prints an error message and blocks the plugin indefinitely instead of failing. Blocking indefinitely follows legacy semantics that allow the plugin to deploy successfully on nodes that don't have GPUs on them (and aren't supposed to have GPUs on them) without throwing an error. In this way, you can blindly deploy a daemonset with the plugin on all nodes in your cluster, whether they have GPUs on them or not, without encountering an error. However, doing so means that there is no way to detect an actual error on nodes that are supposed to have GPUs on them. Failing if an initilization error is encountered is now the default and should be adopted by all new deployments.
+  Boolean type, by default: true. When set to true, the failOnInitError flag fails the plugin if an error is encountered during initialization. When set to false, it prints an error message and blocks the plugin indefinitely instead of failing. Blocking indefinitely follows legacy semantics that allow the plugin to deploy successfully on nodes that don't have GPUs on them (and aren't supposed to have GPUs on them) without throwing an error. In this way, you can blindly deploy a daemonset with the plugin on all nodes in your cluster, whether they have GPUs on them or not, without encountering an error. However, doing so means that there is no way to detect an actual error on nodes that are supposed to have GPUs on them. Failing if an initialization error is encountered is now the default and should be adopted by all new deployments.
 * `device-split-count:` 
   Integer type, by default: 2. The number for NVIDIA device split. For a Kubernetes with *N* NVIDIA GPUs, if we set `device-split-count` argument to *K​*, this Kubernetes with our device plugin will have *K \* N* allocatable vGPU resources. Notice that we suggest not to set device-split-count argument over 5 on NVIDIA 1080 ti/NVIDIA 2080 ti, over 7 on NVIDIA  T4, and over 15 on NVIDIA A100.
 * `device-memory-scaling:` 
-  Float type, by default: 1. The ratio for NVIDIA device memory scaling, can be greater than 1 (enable virtual device memory, experimental feature). For NVIDIA GPU with *M* memory, if we set `device-memory-scaling` argument to *S*, vGPUs splitted by this GPU will totaly get *S \* M* memory in Kubernetes with our device plugin. The memory of each vGPU is also affected by argument `device-split-count`. For previous example, if `device-split-count` argument is set to *K*, each vGPU finally get *S \* M / K* memory.
+  Float type, by default: 1. The ratio for NVIDIA device memory scaling, can be greater than 1 (enable virtual device memory, experimental feature). For NVIDIA GPU with *M* memory, if we set `device-memory-scaling` argument to *S*, vGPUs split by this GPU will totally get *S \* M* memory in Kubernetes with our device plugin. The memory of each vGPU is also affected by argument `device-split-count`. For previous example, if `device-split-count` argument is set to *K*, each vGPU finally get *S \* M / K* memory.
 * `device-cores-scaling:` 
-  Float type, by default: equals `device-split-count`. The ratio for NVIDIA device cores scaling, can be greater than 1. If the `device-cores-scaling` parameter is configured as *S* and the `device-split-count` parameter is configured as *K*, then the average upper limit of sm utilization within **a period of time** corresponding to each vGPU is *S / K*. The sum of the utilization rates of all vGPU sm belonging to the same physical GPU does not exceed 1.
-* `enable-legacy-preferred:` Boolean type, by default: false. For kublet (<1.19) that does not support PreferredAllocation, you can set it to true. It is better to choose a preferred device. When it is turned on, this plugin needs to have read permission to pod, please refer to legacy-preferred-nvidia-device-plugin.yml . For kubelet >= 1.9, it is recommended turn off it.
+  Float type, by default: equals `device-split-count`. The ratio for NVIDIA device cores scaling, can be greater than 1. If the `device-cores-scaling` parameter is configured as *S* and the `device-split-count` parameter is configured as *K*, then the average upper limit of SM utilization within **a period of time** corresponding to each vGPU is *S / K*. The sum of the utilization rates of all vGPU SM belonging to the same physical GPU does not exceed 1.
+* `enable-legacy-preferred:` Boolean type, by default: false. For kubelet (<1.9) that does not support PreferredAllocation, you can set it to true. It is better to choose a preferred device. When it is turned on, this plugin needs to have read permission to pod, please refer to legacy-preferred-nvidia-device-plugin.yml . For kubelet >= 1.9, it is recommended turn off it.
 
 After configure those optional arguments, you can enable the vGPU support by following command:
 
