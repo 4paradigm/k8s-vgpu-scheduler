@@ -19,36 +19,29 @@ package main
 import (
 	"fmt"
 	"log"
-	"strings"
 
 	"github.com/NVIDIA/gpu-monitoring-tools/bindings/go/nvml"
-	pluginapi "k8s.io/kubelet/pkg/apis/deviceplugin/v1beta1"
+	//"github.com/NVIDIA/nvidia-docker/src/nvml"
+	pluginapi "k8s.io/kubernetes/pkg/kubelet/apis/deviceplugin/v1alpha1"
 )
 
 // VDevice virtual device
 type VDevice struct {
 	pluginapi.Device
-	dev    *Device
+	dev    *nvml.Device
 	memory uint64
 }
 
 // Device2VDevice device to virtual device
-func Device2VDevice(devices []*Device) []*VDevice {
+func Device2VDevice(devices []*pluginapi.Device) []*VDevice {
 	var vdevices []*VDevice
 	for _, d := range devices {
-		log.Println("uuid=", d.ID)
-		if strings.Contains(d.ID, "MIG") {
-			vd := &VDevice{Device: d.Device, dev: d, memory: 0}
-			vd.ID = fmt.Sprintf("%v-%v", d.ID, 0)
-			vd.memory = 0
-			vdevices = append(vdevices, vd)
-			continue
-		}
+		log.Println("uuid=", d.ID, "split=", deviceSplitCountFlag)
 		dev, err := nvml.NewDeviceByUUID(d.ID)
 		check(err)
 		memory := uint64(float64(*dev.Memory) * deviceMemoryScalingFlag / float64(deviceSplitCountFlag))
 		for i := uint(0); i < deviceSplitCountFlag; i++ {
-			vd := &VDevice{Device: d.Device, dev: d, memory: memory}
+			vd := &VDevice{Device: *d, dev: dev, memory: memory}
 			vd.ID = fmt.Sprintf("%v-%v", d.ID, i)
 			vd.memory = memory
 			vdevices = append(vdevices, vd)
@@ -80,11 +73,11 @@ func UniqueDeviceIDs(vdevices []*VDevice) []string {
 OUTER:
 	for _, vd := range vdevices {
 		for _, id := range ids {
-			if id == vd.dev.ID {
+			if id == vd.dev.UUID {
 				continue OUTER
 			}
 		}
-		ids = append(ids, vd.dev.ID)
+		ids = append(ids, vd.dev.UUID)
 	}
 	return ids
 }

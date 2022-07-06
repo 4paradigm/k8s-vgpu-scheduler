@@ -24,7 +24,6 @@ import (
 	"io"
 	"net"
 	"strings"
-	"sync"
 	"time"
 
 	"golang.org/x/net/trace"
@@ -32,7 +31,7 @@ import (
 
 // EnableTracing controls whether to trace RPCs using the golang.org/x/net/trace package.
 // This should only be set before any RPCs are sent or received by this program.
-var EnableTracing bool
+var EnableTracing = true
 
 // methodFamily returns the trace family for the given method.
 // It turns "/pkg.Service/GetFoo" into "pkg.Service".
@@ -40,6 +39,9 @@ func methodFamily(m string) string {
 	m = strings.TrimPrefix(m, "/") // remove leading slash
 	if i := strings.Index(m, "/"); i >= 0 {
 		m = m[:i] // remove everything from second slash
+	}
+	if i := strings.LastIndex(m, "."); i >= 0 {
+		m = m[i+1:] // cut down to last dotted component
 	}
 	return m
 }
@@ -51,25 +53,13 @@ type traceInfo struct {
 }
 
 // firstLine is the first line of an RPC trace.
-// It may be mutated after construction; remoteAddr specifically may change
-// during client-side use.
 type firstLine struct {
-	mu         sync.Mutex
 	client     bool // whether this is a client (outgoing) RPC
 	remoteAddr net.Addr
 	deadline   time.Duration // may be zero
 }
 
-func (f *firstLine) SetRemoteAddr(addr net.Addr) {
-	f.mu.Lock()
-	f.remoteAddr = addr
-	f.mu.Unlock()
-}
-
 func (f *firstLine) String() string {
-	f.mu.Lock()
-	defer f.mu.Unlock()
-
 	var line bytes.Buffer
 	io.WriteString(&line, "RPC: ")
 	if f.client {
@@ -86,15 +76,6 @@ func (f *firstLine) String() string {
 	return line.String()
 }
 
-const truncateSize = 100
-
-func truncate(x string, l int) string {
-	if l > len(x) {
-		return x
-	}
-	return x[:l]
-}
-
 // payload represents an RPC request or response payload.
 type payload struct {
 	sent bool        // whether this is an outgoing payload
@@ -104,9 +85,9 @@ type payload struct {
 
 func (p payload) String() string {
 	if p.sent {
-		return truncate(fmt.Sprintf("sent: %v", p.msg), truncateSize)
+		return fmt.Sprintf("sent: %v", p.msg)
 	}
-	return truncate(fmt.Sprintf("recv: %v", p.msg), truncateSize)
+	return fmt.Sprintf("recv: %v", p.msg)
 }
 
 type fmtStringer struct {

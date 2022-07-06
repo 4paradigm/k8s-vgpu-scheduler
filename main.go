@@ -1,18 +1,4 @@
-/*
- * Copyright (c) 2019-2021, NVIDIA CORPORATION.  All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright (c) 2017, NVIDIA CORPORATION. All rights reserved.
 
 package main
 
@@ -26,12 +12,12 @@ import (
 	"syscall"
 
 	"github.com/NVIDIA/gpu-monitoring-tools/bindings/go/nvml"
+	//"github.com/NVIDIA/nvidia-docker/src/nvml"
 	"github.com/fsnotify/fsnotify"
 	cli "github.com/urfave/cli/v2"
-	pluginapi "k8s.io/kubelet/pkg/apis/deviceplugin/v1beta1"
+	pluginapi "k8s.io/kubernetes/pkg/kubelet/apis/deviceplugin/v1alpha1"
 )
 
-var migStrategyFlag string
 var failOnInitErrorFlag bool
 var passDeviceSpecsFlag bool
 var deviceListStrategyFlag string
@@ -42,7 +28,6 @@ var deviceMemoryScalingFlag float64
 var deviceCoresScalingFlag float64
 var enableLegacyPreferredFlag bool
 var verboseFlag int
-
 var version string // This should be set at build time to indicate the actual version
 
 func main() {
@@ -51,15 +36,7 @@ func main() {
 	c.Before = validateFlags
 	c.Action = start
 
-	migStrategyFlag = MigStrategyNone
 	c.Flags = []cli.Flag{
-		&cli.StringFlag{
-			Name:        "mig-strategy",
-			Value:       "none",
-			Usage:       "the desired strategy for exposing MIG devices on GPUs that support it:\n\t\t[none | single | mixed]",
-			Destination: &migStrategyFlag,
-			EnvVars:     []string{"MIG_STRATEGY"},
-		},
 		&cli.BoolFlag{
 			Name:        "fail-on-init-error",
 			Value:       true,
@@ -161,6 +138,7 @@ func validateFlags(c *cli.Context) error {
 }
 
 func start(c *cli.Context) error {
+
 	log.Println("Loading PciInfo")
 	cmd := exec.Command("lspci")
 	out, err := cmd.Output()
@@ -183,109 +161,68 @@ func start(c *cli.Context) error {
 	if len(pcibusfile) > 0 {
 		ioutil.WriteFile(pcibusfile, []byte(pcibusstr), 0644)
 	}
+
 	log.Println("Loading NVML")
 	if err := nvml.Init(); err != nil {
-		log.SetOutput(os.Stderr)
-		log.Printf("Failed to initialize NVML: %v.", err)
-		log.Printf("If this is a GPU node, did you set the docker default runtime to `nvidia`?")
-		log.Printf("You can check the prerequisites at: https://github.com/NVIDIA/k8s-device-plugin#prerequisites")
-		log.Printf("You can learn how to set the runtime at: https://github.com/NVIDIA/k8s-device-plugin#quick-start")
-		log.Printf("If this is not a GPU node, you should set up a toleration or nodeSelector to only deploy this plugin on GPU nodes")
-		if failOnInitErrorFlag {
-			return fmt.Errorf("failed to initialize NVML: %v", err)
-		}
-		select {}
+		log.Printf("Failed to start nvml with error: %s.", err)
+		os.Exit(1)
 	}
 	defer func() { log.Println("Shutdown of NVML returned:", nvml.Shutdown()) }()
+
+	log.Println("Fetching devices.")
+	if len(getDevices()) == 0 {
+		log.Println("No devices found. Waiting indefinitely.")
+		select {}
+	}
 
 	log.Println("Starting FS watcher.")
 	watcher, err := newFSWatcher(pluginapi.DevicePluginPath)
 	if err != nil {
-		return fmt.Errorf("failed to create FS watcher: %v", err)
+		log.Println("Failed to created FS watcher.")
+		os.Exit(1)
 	}
 	defer watcher.Close()
 
 	log.Println("Starting OS watcher.")
 	sigs := newOSWatcher(syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 
-	var plugins []*NvidiaDevicePlugin
-restart:
-	// If we are restarting, idempotently stop any running plugins before
-	// recreating them below.
-	for _, p := range plugins {
-		p.Stop()
-	}
+	restart := true
+	var devicePlugin *NvidiaDevicePlugin
 
-	log.Println("Retreiving plugins.")
-	migStrategy, err := NewMigStrategy(migStrategyFlag)
-	if err != nil {
-		return fmt.Errorf("error creating MIG strategy: %v", err)
-	}
-	plugins = migStrategy.GetPlugins()
-
-	// Loop through all plugins, starting them if they have any devices
-	// to serve. If even one plugin fails to start properly, try
-	// starting them all again.
-	started := 0
-	pluginStartError := make(chan struct{})
-	for _, p := range plugins {
-		// Just continue if there are no devices to serve for plugin p.
-		if len(p.Devices()) == 0 {
-			continue
-		}
-
-		// Start the gRPC server for plugin p and connect it with the kubelet.
-		if err := p.Start(); err != nil {
-			log.SetOutput(os.Stderr)
-			log.Println("Could not contact Kubelet, retrying. Did you enable the device plugin feature gate?")
-			log.Printf("You can check the prerequisites at: https://github.com/NVIDIA/k8s-device-plugin#prerequisites")
-			log.Printf("You can learn how to set the runtime at: https://github.com/NVIDIA/k8s-device-plugin#quick-start")
-			close(pluginStartError)
-			goto events
-		}
-		started++
-	}
-
-	if started == 0 {
-		log.Println("No devices found. Waiting indefinitely.")
-	}
-
-events:
-	// Start an infinite loop, waiting for several indicators to either log
-	// some messages, trigger a restart of the plugins, or exit the program.
+L:
 	for {
-		select {
-		// If there was an error starting any plugins, restart them all.
-		case <-pluginStartError:
-			goto restart
+		if restart {
+			if devicePlugin != nil {
+				devicePlugin.Stop()
+			}
 
-		// Detect a kubelet restart by watching for a newly created
-		// 'pluginapi.KubeletSocket' file. When this occurs, restart this loop,
-		// restarting all of the plugins in the process.
+			devicePlugin = NewNvidiaDevicePlugin()
+			if err := devicePlugin.Serve(); err != nil {
+				log.Println("Could not contact Kubelet, retrying. Did you enable the device plugin feature gate?")
+			} else {
+				restart = false
+			}
+		}
+
+		select {
 		case event := <-watcher.Events:
 			if event.Name == pluginapi.KubeletSocket && event.Op&fsnotify.Create == fsnotify.Create {
 				log.Printf("inotify: %s created, restarting.", pluginapi.KubeletSocket)
-				goto restart
+				restart = true
 			}
 
-		// Watch for any other fs errors and log them.
 		case err := <-watcher.Errors:
 			log.Printf("inotify: %s", err)
 
-		// Watch for any signals from the OS. On SIGHUP, restart this loop,
-		// restarting all of the plugins in the process. On all other
-		// signals, exit the loop and exit the program.
 		case s := <-sigs:
 			switch s {
 			case syscall.SIGHUP:
 				log.Println("Received SIGHUP, restarting.")
-				goto restart
+				restart = true
 			default:
 				log.Printf("Received signal \"%v\", shutting down.", s)
-				for _, p := range plugins {
-					p.Stop()
-				}
-				break events
+				devicePlugin.Stop()
+				break L
 			}
 		}
 	}

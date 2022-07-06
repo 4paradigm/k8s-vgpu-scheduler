@@ -5,7 +5,7 @@ metadata:
 spec:
   restartPolicy: OnFailure
   containers:
-  - image: nvcr.io/nvidia/cuda:9.0-devel
+  - image: nvidia/cuda
     name: pod1-ctr
     command: ["sleep"]
     args: ["100000"]

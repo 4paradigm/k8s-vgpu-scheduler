@@ -1,24 +1,39 @@
 /*
  *
- * Copyright 2017 gRPC authors.
+ * Copyright 2017, Google Inc.
+ * All rights reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above
+ * copyright notice, this list of conditions and the following disclaimer
+ * in the documentation and/or other materials provided with the
+ * distribution.
+ *     * Neither the name of Google Inc. nor the names of its
+ * contributors may be used to endorse or promote products derived from
+ * this software without specific prior written permission.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
 
 // Package grpclog defines logging for grpc.
 //
-// All logs in transport and grpclb packages only go to verbose level 2.
+// All logs in transport package only go to verbose level 2.
 // All logs in other packages in grpc are logged in spite of the verbosity level.
 //
 // In the default logger,
@@ -26,107 +41,95 @@
 // verbosity level can be set by GRPC_GO_LOG_VERBOSITY_LEVEL.
 package grpclog // import "google.golang.org/grpc/grpclog"
 
-import (
-	"os"
+import "os"
 
-	"google.golang.org/grpc/internal/grpclog"
-)
-
-func init() {
-	SetLoggerV2(newLoggerV2())
-}
+var logger = newLoggerV2()
 
 // V reports whether verbosity level l is at least the requested verbose level.
 func V(l int) bool {
-	return grpclog.Logger.V(l)
+	return logger.V(l)
 }
 
 // Info logs to the INFO log.
 func Info(args ...interface{}) {
-	grpclog.Logger.Info(args...)
+	logger.Info(args...)
 }
 
 // Infof logs to the INFO log. Arguments are handled in the manner of fmt.Printf.
 func Infof(format string, args ...interface{}) {
-	grpclog.Logger.Infof(format, args...)
+	logger.Infof(format, args...)
 }
 
 // Infoln logs to the INFO log. Arguments are handled in the manner of fmt.Println.
 func Infoln(args ...interface{}) {
-	grpclog.Logger.Infoln(args...)
+	logger.Infoln(args...)
 }
 
 // Warning logs to the WARNING log.
 func Warning(args ...interface{}) {
-	grpclog.Logger.Warning(args...)
+	logger.Warning(args...)
 }
 
 // Warningf logs to the WARNING log. Arguments are handled in the manner of fmt.Printf.
 func Warningf(format string, args ...interface{}) {
-	grpclog.Logger.Warningf(format, args...)
+	logger.Warningf(format, args...)
 }
 
 // Warningln logs to the WARNING log. Arguments are handled in the manner of fmt.Println.
 func Warningln(args ...interface{}) {
-	grpclog.Logger.Warningln(args...)
+	logger.Warningln(args...)
 }
 
 // Error logs to the ERROR log.
 func Error(args ...interface{}) {
-	grpclog.Logger.Error(args...)
+	logger.Error(args...)
 }
 
 // Errorf logs to the ERROR log. Arguments are handled in the manner of fmt.Printf.
 func Errorf(format string, args ...interface{}) {
-	grpclog.Logger.Errorf(format, args...)
+	logger.Errorf(format, args...)
 }
 
 // Errorln logs to the ERROR log. Arguments are handled in the manner of fmt.Println.
 func Errorln(args ...interface{}) {
-	grpclog.Logger.Errorln(args...)
+	logger.Errorln(args...)
 }
 
 // Fatal logs to the FATAL log. Arguments are handled in the manner of fmt.Print.
 // It calls os.Exit() with exit code 1.
 func Fatal(args ...interface{}) {
-	grpclog.Logger.Fatal(args...)
-	// Make sure fatal logs will exit.
+	logger.Fatal(args...)
 	os.Exit(1)
 }
 
 // Fatalf logs to the FATAL log. Arguments are handled in the manner of fmt.Printf.
-// It calls os.Exit() with exit code 1.
+// It calles os.Exit() with exit code 1.
 func Fatalf(format string, args ...interface{}) {
-	grpclog.Logger.Fatalf(format, args...)
-	// Make sure fatal logs will exit.
+	logger.Fatalf(format, args...)
 	os.Exit(1)
 }
 
 // Fatalln logs to the FATAL log. Arguments are handled in the manner of fmt.Println.
 // It calle os.Exit()) with exit code 1.
 func Fatalln(args ...interface{}) {
-	grpclog.Logger.Fatalln(args...)
-	// Make sure fatal logs will exit.
+	logger.Fatalln(args...)
 	os.Exit(1)
 }
 
 // Print prints to the logger. Arguments are handled in the manner of fmt.Print.
-//
 // Deprecated: use Info.
 func Print(args ...interface{}) {
-	grpclog.Logger.Info(args...)
+	logger.Info(args...)
 }
 
 // Printf prints to the logger. Arguments are handled in the manner of fmt.Printf.
-//
 // Deprecated: use Infof.
 func Printf(format string, args ...interface{}) {
-	grpclog.Logger.Infof(format, args...)
+	logger.Infof(format, args...)
 }
 
 // Println prints to the logger. Arguments are handled in the manner of fmt.Println.
-//
 // Deprecated: use Infoln.
 func Println(args ...interface{}) {
-	grpclog.Logger.Infoln(args...)
+	logger.Infoln(args...)
 }

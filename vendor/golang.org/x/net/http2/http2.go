@@ -19,6 +19,7 @@ package http2 // import "golang.org/x/net/http2"
 import (
 	"bufio"
 	"crypto/tls"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -28,7 +29,7 @@ import (
 	"strings"
 	"sync"
 
-	"golang.org/x/net/http/httpguts"
+	"golang.org/x/net/lex/httplex"
 )
 
 var (
@@ -172,8 +173,13 @@ func (s SettingID) String() string {
 	return fmt.Sprintf("UNKNOWN_SETTING_%d", uint16(s))
 }
 
+var (
+	errInvalidHeaderFieldName  = errors.New("http2: invalid header field name")
+	errInvalidHeaderFieldValue = errors.New("http2: invalid header field value")
+)
+
 // validWireHeaderFieldName reports whether v is a valid header field
-// name (key). See httpguts.ValidHeaderName for the base rules.
+// name (key). See httplex.ValidHeaderName for the base rules.
 //
 // Further, http2 says:
 //   "Just as in HTTP/1.x, header field names are strings of ASCII
@@ -185,7 +191,7 @@ func validWireHeaderFieldName(v string) bool {
 		return false
 	}
 	for _, r := range v {
-		if !httpguts.IsTokenRune(r) {
+		if !httplex.IsTokenRune(r) {
 			return false
 		}
 		if 'A' <= r && r <= 'Z' {
@@ -195,12 +201,19 @@ func validWireHeaderFieldName(v string) bool {
 	return true
 }
 
+var httpCodeStringCommon = map[int]string{} // n -> strconv.Itoa(n)
+
+func init() {
+	for i := 100; i <= 999; i++ {
+		if v := http.StatusText(i); v != "" {
+			httpCodeStringCommon[i] = strconv.Itoa(i)
+		}
+	}
+}
+
 func httpCodeString(code int) string {
-	switch code {
-	case 200:
-		return "200"
-	case 404:
-		return "404"
+	if s, ok := httpCodeStringCommon[code]; ok {
+		return s
 	}
 	return strconv.Itoa(code)
 }
@@ -241,7 +254,6 @@ func (cw closeWaiter) Wait() {
 // Its buffered writer is lazily allocated as needed, to minimize
 // idle memory usage with many connections.
 type bufferedWriter struct {
-	_  incomparable
 	w  io.Writer     // immutable
 	bw *bufio.Writer // non-nil when data is buffered
 }
@@ -300,7 +312,7 @@ func mustUint31(v int32) uint32 {
 }
 
 // bodyAllowedForStatus reports whether a given response status code
-// permits a body. See RFC 7230, section 3.3.
+// permits a body. See RFC 2616, section 4.4.
 func bodyAllowedForStatus(status int) bool {
 	switch {
 	case status >= 100 && status <= 199:
@@ -314,7 +326,6 @@ func bodyAllowedForStatus(status int) bool {
 }
 
 type httpError struct {
-	_       incomparable
 	msg     string
 	timeout bool
 }
@@ -378,8 +389,3 @@ func (s *sorter) SortStrings(ss []string) {
 func validPseudoPath(v string) bool {
 	return (len(v) > 0 && v[0] == '/') || v == "*"
 }
-
-// incomparable is a zero-width, non-comparable type. Adding it to a struct
-// makes that struct also non-comparable, and generally doesn't add
-// any size (as long as it's first).
-type incomparable [0]func()
