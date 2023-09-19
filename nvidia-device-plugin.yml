@@ -11,7 +11,7 @@ spec:
     spec:
       priorityClassName: "system-node-critical"
       containers:
-      - image: m7-ieg-pico-test01:5000/k8s-device-plugin:v1.8
+      - image: 4pdosc/k8s-device-plugin:v1.8
         name: nvidia-device-plugin-ctr
         command: ["/bin/sh","-c","cp -f /etc/vgpu/* /usr/local/vgpu/;nvidia-device-plugin --device-split-count=3 --device-memory-scaling=3"]
         #args: ["--device-split-count=3", "--device-memory-scaling=3"]

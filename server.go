@@ -222,7 +222,12 @@ func (m *NvidiaDevicePlugin) Allocate(ctx context.Context, r *pluginapi.Allocate
 				&pluginapi.Mount{ContainerPath: "/etc/ld.so.preload",
 					HostPath: "/usr/local/vgpu/ld.so.preload", ReadOnly: true},
 				&pluginapi.Mount{ContainerPath: "/usr/local/vgpu/pciinfo.vgpu",
-					HostPath: os.Getenv("PCIBUSFILE"), ReadOnly: true})
+					HostPath: os.Getenv("PCIBUSFILE"), ReadOnly: true},
+				&pluginapi.Mount{ContainerPath: "/usr/bin/vgpuvalidator",
+					HostPath: "/usr/local/vgpu/vgpuvalidator", ReadOnly: true},
+				&pluginapi.Mount{ContainerPath: "/vgpu",
+					HostPath: "/usr/local/vgpu/license", ReadOnly: true},
+				)
 			if verboseFlag > 5 {
 				log.Printf("Debug: allocate request %v, response %v\n",
 					r.DevicesIDs, deviceIDs)
