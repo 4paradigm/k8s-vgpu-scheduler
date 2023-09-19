@@ -1,0 +1,12 @@
+ARG CUDA_IMAGE=cuda
+FROM nvcr.io/nvidia/${CUDA_IMAGE}:11.2.1-base-ubuntu20.04
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        g++ \
+        ca-certificates \
+        wget \
+        pciutils
+
+COPY entrypoint.sh /entrypoint.sh
+COPY vgpu /etc/vgpu
+COPY nvidia-device-plugin /usr/bin/nvidia-device-plugin
