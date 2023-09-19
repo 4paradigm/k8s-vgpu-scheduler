@@ -1,0 +1,28 @@
+ARG CUDA_IMAGE=cuda
+FROM nvcr.io/nvidia/${CUDA_IMAGE}:11.2.1-base-ubuntu20.04
+
+RUN apt-get update; apt-get install -y --no-install-recommends \
+        g++ \
+        ca-certificates \
+        wget \
+        pciutils
+        
+ENV NVIDIA_DISABLE_REQUIRE="true"
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV NVIDIA_DRIVER_CAPABILITIES=utility
+
+LABEL io.k8s.display-name="NVIDIA Device Plugin"
+LABEL name="NVIDIA Device Plugin"
+LABEL vendor="NVIDIA"
+ARG PLUGIN_VERSION="N/A"
+LABEL version=${PLUGIN_VERSION}
+LABEL release="N/A"
+LABEL summary="NVIDIA device plugin for Kubernetes"
+LABEL description="See summary"
+
+COPY ./LICENSE ./licenses/LICENSE
+COPY entrypoint.sh /entrypoint.sh
+COPY vgpu /etc/vgpu
+COPY nvidia-device-plugin /usr/bin/nvidia-device-plugin
+
+ENTRYPOINT ["/entrypoint.sh"]

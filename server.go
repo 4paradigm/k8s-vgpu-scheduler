@@ -505,6 +505,7 @@ func (m *NvidiaDevicePlugin) Allocate(ctx context.Context, reqs *pluginapi.Alloc
 		if deviceMemoryScalingFlag > 1 {
 			response.Envs["CUDA_OVERSUBSCRIBE"] = "true"
 		}
+		
 		//response.Annotations = make(map[string]string)
 		//response.Annotations["CUDA-DEVICE-MEMORY-SHARED-CACHE"] = timestr
 		response.Mounts = append(response.Mounts,
@@ -513,7 +514,13 @@ func (m *NvidiaDevicePlugin) Allocate(ctx context.Context, reqs *pluginapi.Alloc
 			&pluginapi.Mount{ContainerPath: "/etc/ld.so.preload",
 				HostPath: "/usr/local/vgpu/ld.so.preload", ReadOnly: true},
 			&pluginapi.Mount{ContainerPath: "/usr/local/vgpu/pciinfo.vgpu",
-				HostPath: os.Getenv("PCIBUSFILE"), ReadOnly: true})
+				HostPath: os.Getenv("PCIBUSFILE"), ReadOnly: true},
+			&pluginapi.Mount{ContainerPath: "/usr/bin/vgpuvalidator",
+				HostPath: "/usr/local/vgpu/vgpuvalidator",ReadOnly:true},
+			&pluginapi.Mount{ContainerPath: "/vgpu",
+				HostPath: "/usr/local/vgpu/license",ReadOnly:true},
+			)
+		fmt.Println("mounts=",response.Mounts)
 		responses.ContainerResponses = append(responses.ContainerResponses, &response)
 
 		if verboseFlag > 5 {

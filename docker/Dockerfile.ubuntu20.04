@@ -34,7 +34,7 @@ COPY . .
 
 ARG PLUGIN_VERSION="N/A"
 RUN export CGO_LDFLAGS_ALLOW='-Wl,--unresolved-symbols=ignore-in-object-files' && \
-    go build -ldflags="-s -w -X 'main.Version=${PLUGIN_VERSION}'" -v -o /build/nvidia-device-plugin
+    go build -ldflags="-s -w -X 'main.Version=${PLUGIN_VERSION}'" -v -o build/nvidia-device-plugin
 
 
 ARG CUDA_IMAGE=cuda
@@ -62,7 +62,6 @@ LABEL description="See summary"
 COPY ./LICENSE ./licenses/LICENSE
 COPY --from=build /build/entrypoint.sh /entrypoint.sh
 COPY --from=build /build/vgpu /etc/vgpu
-
 COPY --from=build /build/nvidia-device-plugin /usr/bin/nvidia-device-plugin
 
 ENTRYPOINT ["/entrypoint.sh"]
