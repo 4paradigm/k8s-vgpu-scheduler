@@ -50,7 +50,7 @@ The list of prerequisites for running the NVIDIA device plugin is described belo
 
 <details> <summary> How to prepare your GPU Nodes </summary>
 
-#### Preparing your GPU Nodes
+#### 1.1 Configure nvidia-container-toolkit
 The following steps need to be executed on all your GPU nodes.
 This README assumes that the NVIDIA drivers and the `nvidia-container-toolkit` have been pre-installed.
 It also assumes that you have configured the `nvidia-container-runtime` as the default low-level runtime to use.
@@ -113,7 +113,7 @@ And then restart `containerd`:
 $ sudo systemctl daemon-reload && systemctl restart containerd
 ```
 
-#### Labeling your nodes 
+#### 1.2 Labeling your nodes 
 
 Then, you need to label your GPU nodes which can be scheduled by HAMI by adding "gpu=on", otherwise, it cannot be managed by our scheduler.
 
