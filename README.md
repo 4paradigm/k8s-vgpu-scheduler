@@ -125,7 +125,7 @@ kubectl label nodes {nodeid} gpu=on
 
 ### Step 2. Install and Uninstall
 
-####  <details> <summary> Installation </summary>
+<details> <summary> Installation </summary>
 
 First, you need to heck your Kubernetes version by the using the following command
 
