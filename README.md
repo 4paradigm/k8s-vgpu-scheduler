@@ -26,6 +26,14 @@ English version|[中文版](README_cn.md)
 
 ***Easy to use***: You don't need to modify your task yaml to use our scheduler. All your jobs will be automatically supported after installation. In addition, you can specify your resource name other than "nvidia.com/gpu" if you wish
 
+## Features
+
+- Hard Limit on Device Memory.
+- Allows partial device allocation by specifying device memory 
+- Hard Limit on streaming multiprocessor.
+- Allows partial device allocation by specifying device core usage
+- Zero changes to existing programs
+
 ## When to use
 
 1. Scenarios when pods need to be allocated with certain device memory usage or device cores.
@@ -285,21 +293,6 @@ $ kubectl apply -f benchmarks/ai-benchmark/ai-benchmark.yml
 ```
 $ kubectl logs [pod id]
 ```
-
-## Features
-
-- Specify the number of vGPUs divided by each physical GPU.
-- Limits vGPU's Device Memory.
-- Allows vGPU allocation by specifying device memory 
-- Limits vGPU's Streaming Multiprocessor.
-- Allows vGPU allocation by specifying device core usage
-- Zero changes to existing programs
-
-## Experimental Features
-
-- Virtual Device Memory
-
-  The device memory of the vGPU can exceed the physical device memory of the GPU. At this time, the excess part will be put in the RAM, which will have a certain impact on the performance.
 
 ## Known Issues
 
