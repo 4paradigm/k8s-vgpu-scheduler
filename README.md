@@ -48,9 +48,8 @@ The list of prerequisites for running the NVIDIA device plugin is described belo
 
 ### Step 1.Preparing your GPU Nodes 
 
-<details> <summary> How to prepare your GPU Nodes </summary>
+<details> <summary> Configure nvidia-container-toolkit </summary>
 
-#### 1.1 Configure nvidia-container-toolkit
 The following steps need to be executed on all your GPU nodes.
 This README assumes that the NVIDIA drivers and the `nvidia-container-toolkit` have been pre-installed.
 It also assumes that you have configured the `nvidia-container-runtime` as the default low-level runtime to use.
@@ -113,7 +112,9 @@ And then restart `containerd`:
 $ sudo systemctl daemon-reload && systemctl restart containerd
 ```
 
-#### 1.2 Labeling your nodes 
+</details>
+
+<details> <summary> Label your nodes </summary>
 
 Then, you need to label your GPU nodes which can be scheduled by HAMI by adding "gpu=on", otherwise, it cannot be managed by our scheduler.
 
@@ -169,7 +170,7 @@ $ helm install vgpu vgpu -n kube-system
 
 </details>
 
-<details> <summary> Upgrade </summary>
+<details> <summary> Uninstall </summary>
 
 ```
 helm uninstall vgpu -n kube-system
