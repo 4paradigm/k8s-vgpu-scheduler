@@ -46,7 +46,7 @@ The list of prerequisites for running the NVIDIA device plugin is described belo
 
 ## Quick Start
 
-### Step 1.Preparing your GPU Nodes 
+### Step 1. Preparing your GPU Nodes 
 
 <details> <summary> Configure nvidia-container-toolkit </summary>
 
@@ -116,7 +116,7 @@ $ sudo systemctl daemon-reload && systemctl restart containerd
 
 <details> <summary> Label your nodes </summary>
 
-Then, you need to label your GPU nodes which can be scheduled by HAMI by adding "gpu=on", otherwise, it cannot be managed by our scheduler.
+You need to label your GPU nodes which can be scheduled by HAMI by adding "gpu=on", otherwise, it cannot be managed by our scheduler.
 
 ```
 kubectl label nodes {nodeid} gpu=on
@@ -178,7 +178,9 @@ helm uninstall vgpu -n kube-system
 
 </details>
 
-### Running GPU Jobs
+### Step 3. Submit Task
+
+<details> <summary> Task example </summary>
 
 NVIDIA vGPUs can now be requested by a container
 using the `nvidia.com/gpu` resource type:
@@ -203,14 +205,16 @@ spec:
 You should be cautious that if the task can't fit in any GPU node(ie. the number of `nvidia.com/gpu` you request exceeds the number of GPU in any node). The task will get stuck in `pending` state.
 
 You can now execute `nvidia-smi` command in the container and see the difference of GPU memory between vGPU and real GPU.
-</details>
 
-> **WARNING:** *if you don't request vGPUs when using the device plugin with NVIDIA images all
+> **WARNING:** *1. if you don't request vGPUs when using the device plugin with NVIDIA images all
 > the vGPUs on the machine will be exposed inside your container.*
+> *2. Do not set "nodeName" field, use "nodeSelector" instead.* 
 
-### More examples
+#### More examples
 
 Click [here](docs/examples/nvidia/)
+
+</details>
 
 ### Scheduler Webhook Service NodePort
 
