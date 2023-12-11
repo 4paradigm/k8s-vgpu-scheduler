@@ -157,7 +157,7 @@ If the following two pods `vgpu-device-plugin` and `vgpu-scheduler` are in *Runn
 
 </details>
 
-#### Upgrade
+<details> <summary> Upgrade </summary>
 
 To Upgrade the k8s-vGPU to the latest version, all you need to do is update the repo and restart the chart.
 
@@ -167,11 +167,15 @@ $ helm repo update
 $ helm install vgpu vgpu -n kube-system
 ```
 
-#### Uninstall 
+</details>
+
+<details> <summary> Upgrade </summary>
 
 ```
 helm uninstall vgpu -n kube-system
 ```
+
+</details>
 
 ### Running GPU Jobs
 
