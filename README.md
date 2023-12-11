@@ -219,7 +219,7 @@ Click [here](docs/examples/nvidia/)
 
 ### Monitor
 
-<details> <summary> Monitor cluster device overview </summary>
+<details> <summary> Get cluster overview </summary>
 
 Monitoring is automatically enabled after installation. You can get the overview of cluster information by visiting the following url:
 
@@ -234,10 +234,6 @@ grafana dashboard [example](docs/dashboard.md)
 > **Note** The status of a node won't be collected before you submit a task
 
 </details>
-
-## Scheduling
-
-Current schedule strategy is to select GPU with the lowest task. Thus balance the loads across mutiple GPUs
 
 ## Benchmarks
 
