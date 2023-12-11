@@ -208,6 +208,7 @@ You can now execute `nvidia-smi` command in the container and see the difference
 
 > **WARNING:** *1. if you don't request vGPUs when using the device plugin with NVIDIA images all
 > the vGPUs on the machine will be exposed inside your container.*
+
 > *2. Do not set "nodeName" field, use "nodeSelector" instead.* 
 
 #### More examples
