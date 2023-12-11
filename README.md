@@ -1,6 +1,6 @@
 English version|[中文版](README_cn.md)
 
-# Heterogeneous AI Computing Virtualization Middleware (Hami)
+# HAMI--Heterogeneous AI Computing Virtualization Middleware
 
 [![build status](https://github.com/4paradigm/k8s-vgpu-scheduler/actions/workflows/main.yml/badge.svg)](https://github.com/4paradigm/k8s-vgpu-scheduler/actions/workflows/main.yml)
 [![docker pulls](https://img.shields.io/docker/pulls/4pdosc/k8s-vgpu.svg)](https://hub.docker.com/r/4pdosc/k8s-vgpu)
@@ -36,10 +36,11 @@ English version|[中文版](README_cn.md)
 
 ## When to use
 
-1. Scenarios when pods need to be allocated with certain device memory usage or device cores.
-2. Needs to balance GPU usage in cluster with mutiple GPU node
-3. Low utilization of device memory and computing units, such as running 10 tf-servings on one GPU.
-4. Situations that require a large number of small GPUs, such as teaching scenarios where one GPU is provided for multiple students to use, and the cloud platform that provides small GPU instance.
+1. Device sharing(or device virtualization) on kubernetes
+2. Scenarios when pods need to be allocated with certain device memory usage or device cores.
+3. Needs to balance GPU usage in cluster with mutiple GPU node
+4. Low utilization of device memory and computing units, such as running 10 tf-servings on one GPU.
+5. Situations that require a large number of small GPUs, such as teaching scenarios where one GPU is provided for multiple students to use, and the cloud platform that provides small GPU instance.
 
 ## Prerequisites
 
