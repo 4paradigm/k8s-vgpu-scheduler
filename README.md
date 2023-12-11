@@ -46,6 +46,7 @@ The list of prerequisites for running the NVIDIA device plugin is described belo
 
 ## Quick Start
 
+<details> <summary> ###Preparing your GPU Nodes </summary>
 ### Preparing your GPU Nodes
 The following steps need to be executed on all your GPU nodes.
 This README assumes that the NVIDIA drivers and the `nvidia-container-toolkit` have been pre-installed.
@@ -170,6 +171,7 @@ spec:
 You should be cautious that if the task can't fit in any GPU node(ie. the number of `nvidia.com/gpu` you request exceeds the number of GPU in any node). The task will get stuck in `pending` state.
 
 You can now execute `nvidia-smi` command in the container and see the difference of GPU memory between vGPU and real GPU.
+</details>
 
 > **WARNING:** *if you don't request vGPUs when using the device plugin with NVIDIA images all
 > the vGPUs on the machine will be exposed inside your container.*
