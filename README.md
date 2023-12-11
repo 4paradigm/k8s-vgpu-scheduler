@@ -123,7 +123,9 @@ kubectl label nodes {nodeid} gpu=on
 
 </details>
 
-### Enabling vGPU Support in Kubernetes
+### Step 2. Install and Uninstall
+
+####  <details> <summary> Installation </summary>
 
 First, you need to heck your Kubernetes version by the using the following command
 
@@ -152,6 +154,24 @@ $ kubectl get pods -n kube-system
 ```
 
 If the following two pods `vgpu-device-plugin` and `vgpu-scheduler` are in *Running* state, then your installation is successful.
+
+</details>
+
+#### Upgrade
+
+To Upgrade the k8s-vGPU to the latest version, all you need to do is update the repo and restart the chart.
+
+```
+$ helm uninstall vgpu -n kube-system
+$ helm repo update
+$ helm install vgpu vgpu -n kube-system
+```
+
+#### Uninstall 
+
+```
+helm uninstall vgpu -n kube-system
+```
 
 ### Running GPU Jobs
 
@@ -205,21 +225,6 @@ grafana dashboard [example](docs/dashboard.md)
 
 > **Note** The status of a node won't be collected before any GPU operations
 
-### Upgrade
-
-To Upgrade the k8s-vGPU to the latest version, all you need to do is update the repo and restart the chart.
-
-```
-$ helm uninstall vgpu -n kube-system
-$ helm repo update
-$ helm install vgpu vgpu -n kube-system
-```
-
-### Uninstall 
-
-```
-helm uninstall vgpu -n kube-system
-```
 
 ## Scheduling
 
