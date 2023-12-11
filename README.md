@@ -46,7 +46,7 @@ The list of prerequisites for running the NVIDIA device plugin is described belo
 
 ## Quick Start
 
-### Step 1. Preparing your GPU Nodes 
+###  Preparing your GPU Nodes 
 
 <details> <summary> Configure nvidia-container-toolkit </summary>
 
@@ -124,7 +124,7 @@ kubectl label nodes {nodeid} gpu=on
 
 </details>
 
-### Step 2. Install and Uninstall
+###  Install and Uninstall
 
 <details> <summary> Installation </summary>
 
@@ -178,7 +178,7 @@ helm uninstall vgpu -n kube-system
 
 </details>
 
-### Step 3. Submit Task
+### Submit Task
 
 <details> <summary> Task example </summary>
 
@@ -208,7 +208,7 @@ You can now execute `nvidia-smi` command in the container and see the difference
 
 > **WARNING:** *1. if you don't request vGPUs when using the device plugin with NVIDIA images all
 > the vGPUs on the machine will be exposed inside your container.*
-
+> 
 > *2. Do not set "nodeName" field, use "nodeSelector" instead.* 
 
 #### More examples
@@ -217,24 +217,23 @@ Click [here](docs/examples/nvidia/)
 
 </details>
 
-### Scheduler Webhook Service NodePort
+### Monitor
 
-Default schedulerPort is 31998, other values can be set using `--set deivcePlugin.service.schedulerPort` during installation.
+<details> <summary> Monitor cluster device overview </summary>
 
-### Monitoring vGPU status
-
-Monitoring is automatically enabled after installation. You can get vGPU status of a node by visiting 
+Monitoring is automatically enabled after installation. You can get the overview of cluster information by visiting the following url:
 
 ```
-http://{nodeip}:{monitorPort}/metrics
+http://{scheduler ip}:{monitorPort}/metrics
 ```
 
-Default monitorPort is 31992, other values can be set using `--set deivcePlugin.service.httpPort` during installation.
+Default monitorPort is 31993, other values can be set using `--set deivcePlugin.service.httpPort` during installation.
 
 grafana dashboard [example](docs/dashboard.md)
 
-> **Note** The status of a node won't be collected before any GPU operations
+> **Note** The status of a node won't be collected before you submit a task
 
+</details>
 
 ## Scheduling
 
