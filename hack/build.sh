@@ -23,7 +23,6 @@ export COMMIT_CODE
 export VERSION="${SHORT_VERSION}-${COMMIT_CODE}"
 export LATEST_VERSION="latest"
 
-#IMAGE=${IMAGE-"m7-ieg-pico-test01:5000/k8s-vgpu"}
 IMAGE=${IMAGE-"4pdosc/k8s-vdevice"}
 
 function go_build() {
