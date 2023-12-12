@@ -1,7 +1,7 @@
-# OpenAIOS vGPU scheduler for Kubernetes
+# HAMi--异构算力虚拟化中间件
 
-[![build status](https://github.com/4paradigm/k8s-device-plugin/actions/workflows/build.yml/badge.svg)](https://github.com/4paradigm/k8s-vgpu-scheduler/actions/workflows/build.yml)
-[![docker pulls](https://img.shields.io/docker/pulls/4pdosc/k8s-device-plugin.svg)](https://hub.docker.com/r/4pdosc/k8s-vgpu)
+[![build status](https://github.com/4paradigm/k8s-vgpu-scheduler/actions/workflows/main.yml/badge.svg)](https://github.com/4paradigm/k8s-vgpu-scheduler/actions/workflows/build.yml)
+[![docker pulls](https://img.shields.io/docker/pulls/4pdosc/k8s-vgpu.svg)](https://hub.docker.com/r/4pdosc/k8s-vgpu)
 [![slack](https://img.shields.io/badge/Slack-Join%20Slack-blue)](https://join.slack.com/t/k8s-device-plugin/shared_invite/zt-oi9zkr5c-LsMzNmNs7UYg6usc0OiWKw)
 [![discuss](https://img.shields.io/badge/Discuss-Ask%20Questions-blue)](https://github.com/4paradigm/k8s-device-plugin/discussions)
 [![Contact Me](https://img.shields.io/badge/Contact%20Me-blue)](https://github.com/4paradigm/k8s-vgpu-scheduler#contact)
@@ -35,41 +35,46 @@
 
 ## 简介
 
-第四范式vGPU调度器满足了所有你对于管理GPU集群所需要的能力，包括：
+异构算力虚拟化中间件HAMi满足了所有你对于管理异构算力集群所需要的能力，包括：
 
-***GPU 共享***: 每个任务可以只占用一部分显卡，多个任务可以共享一张显卡
+***设备复用***: 每个任务可以只占用一部分显卡，多个任务可以共享一张显卡
 
 ***可限制分配的显存大小***: 你现在可以用显存值（例如3000M）或者显存比例（例如50%）来分配GPU，vGPU调度器会确保任务使用的显存不会超过分配数值
 
-***虚拟显存***: 你可以超额使用显存，并将内存当作显存的交换区使用
-
-***指定GPU型号***：当前任务可以通过设置annotation的方式，来选择使用或者不使用某些具体型号的GPU
+***指定设备型号***：当前任务可以通过设置annotation的方式，来选择使用或者不使用某些具体型号的设备
 
 ***无侵入***:  vGPU调度器兼容nvidia官方插件的显卡分配方式，所以安装完毕后，你不需要修改原有的任务文件就可以使用vGPU的功能。当然，你也可以自定义的资源名称
 
-**k8s vGPU scheduler** 在保留4pd-k8s-device-plugin([4paradigm/k8s-device-plugin](https://github.com/4paradigm/k8s-device-plugin))插件功能的基础上，添加了调度模块，以实现多个GPU节点间的负载均衡。k8s vGPU scheduler在原有显卡分配方式的基础上，可以进一步根据显存和算力来切分显卡。在k8s集群中，基于这些切分后的vGPU进行调度，使不同的容器可以安全的共享同一张物理GPU，提高GPU的利用率。此外，插件还可以对显存做虚拟化处理（使用到的显存可以超过物理上的显存），运行一些超大显存需求的任务，或提高共享的任务数，可参考[性能测试报告](#性能测试)。
-
 ## 使用场景
 
-1. 需要定制GPU申请的场合，如申请特定大小的vGPU，每个vGPU使用特定比例的算力。
-2. 在多个GPU节点组成的集群中，任务需要根据自身的显卡需求分配到合适的节点执行。
-3. 显存、计算单元利用率低的情况，如在一张GPU卡上运行10个tf-serving。
-4. 需要大量小显卡的情况，如教学场景把一张GPU提供给多个学生使用、云平台提供小GPU实例。
-5. 物理显存不足的情况，可以开启虚拟显存，如大batch、大模型的训练。
+1. 云原生场景下需要复用算力设备的场合
+2. 需要定制异构算力申请的场合，如申请特定显存大小的虚拟GPU，每个虚拟GPU使用特定比例的算力。
+3. 在多个异构算力节点组成的集群中，任务需要根据自身的显卡需求分配到合适的节点执行。
+4. 显存、计算单元利用率低的情况，如在一张GPU卡上运行10个tf-serving。
+5. 需要大量小显卡的情况，如教学场景把一张GPU提供给多个学生使用、云平台提供小GPU实例。
+
+## 产品特性
+
+- 显存资源的硬隔离
+- 允许通过指定显存来申请算力设备
+- 算力资源的硬隔离
+- 允许通过指定算力使用比例来申请算力设备
+- 对已有程序零改动
 
 
 ## 安装要求
 
-* NVIDIA drivers >= 384.81
+* NVIDIA drivers >= 440
 * nvidia-docker version > 2.0 
 * docker已配置nvidia作为默认runtime
 * Kubernetes version >= 1.16
-* glibc >= 2.17
+* glibc >= 2.17 & glibc < 2.3.0
 * kernel version >= 3.10
 * helm > 3.0 
 
 ## 快速入门
 
+<details> <summary> 配置 nvidia-container-toolkit </summary>
 
 ### GPU节点准备
 
@@ -126,13 +131,21 @@ version = 2
 systemctl daemon-reload && systemctl restart containerd
 ```
 
+</details>
+
+<details> <summary> 为GPU节点打上标签 </summary>
+
 最后，你需要将所有要使用到的GPU节点打上gpu=on标签，否则该节点不会被调度到
 
 ```
 $ kubectl label nodes {nodeid} gpu=on
 ```
 
-### Kubernetes开启vGPU支持
+</details>
+
+### 安装，更新与卸载
+
+<details> <summary> 安装 </summary>
 
 首先使用helm添加我们的vgpu repo
 
@@ -159,6 +172,27 @@ $ helm install vgpu vgpu-charts/vgpu --set scheduler.kubeScheduler.imageTag=v1.1
 ```
 $ kubectl get pods -n kube-system
 ```
+
+</details>
+
+<details> <summary> 更新 </summary>
+
+只需要更新helm repo，并重新启动整个Chart即可自动完成更新，最新的镜像会被自动下载
+
+```
+$ helm uninstall vgpu -n kube-system
+$ helm repo update
+$ helm install vgpu vgpu -n kube-system
+```
+</details>
+
+<details> <summary> 卸载 </summary>
+
+```
+$ helm uninstall vgpu -n kube-system
+```
+
+</details>
 
 ### 运行GPU任务
 
@@ -199,22 +233,6 @@ http://{nodeip}:{monitorPort}/metrics
 grafana dashboard [示例](docs/dashboard_cn.md)
 
 > **注意** 节点上的vGPU状态只有在其使用vGPU后才会被统计W
-
-### 更新
-
-只需要更新helm repo，并重新启动整个Chart即可自动完成更新，最新的镜像会被自动下载
-
-```
-$ helm uninstall vgpu -n kube-system
-$ helm repo update
-$ helm install vgpu vgpu -n kube-system
-```
-
-### 卸载
-
-```
-$ helm uninstall vgpu -n kube-system
-```
 
 ## 调度策略
 
@@ -279,21 +297,6 @@ $ kubectl apply -f benchmarks/ai-benchmark/ai-benchmark.yml
 $ kubectl logs [pod id]
 ```
 
-## 功能
-
-- 指定每张物理GPU切分的最大vGPU的数量
-- 限制vGPU的显存
-- 允许通过指定显存来申请GPU
-- 限制vGPU的计算单元
-- 允许通过指定vGPU使用比例来申请GPU
-- 对已有程序零改动
-
-## 实验性功能
-
-- 虚拟显存
-
-  vGPU的显存总和可以超过GPU实际的显存，这时候超过的部分会放到内存里，对性能有一定的影响。
-
 ## 已知问题
 
 - 目前仅支持计算任务，不支持视频编解码处理。
@@ -311,6 +314,7 @@ $ kubectl logs [pod id]
 - torch1.1.0
 - mxnet 1.4.0
 - mindspore 1.1.1
+- ChatGLM-6B
 
 以上框架均通过测试。
 

@@ -1,6 +1,6 @@
 English version|[中文版](README_cn.md)
 
-# HAMI--Heterogeneous AI Computing Virtualization Middleware
+# HAMi--Heterogeneous AI Computing Virtualization Middleware
 
 [![build status](https://github.com/4paradigm/k8s-vgpu-scheduler/actions/workflows/main.yml/badge.svg)](https://github.com/4paradigm/k8s-vgpu-scheduler/actions/workflows/main.yml)
 [![docker pulls](https://img.shields.io/docker/pulls/4pdosc/k8s-vgpu.svg)](https://hub.docker.com/r/4pdosc/k8s-vgpu)
@@ -176,6 +176,7 @@ $ helm uninstall vgpu -n kube-system
 $ helm repo update
 $ helm install vgpu vgpu -n kube-system
 ```
+> **WARNING:** *If you upgrade HAMi without clearing your submitted tasks, it may result in segmentation fault.*
 
 </details>
 
@@ -184,6 +185,8 @@ $ helm install vgpu vgpu -n kube-system
 ```
 helm uninstall vgpu -n kube-system
 ```
+
+> **NOTICE:** *Uninstallation won't kill running tasks.*
 
 </details>
 
@@ -312,6 +315,7 @@ $ kubectl logs [pod id]
 - torch 1.1.0
 - mxnet 1.4.0
 - mindspore 1.1.1
+- LLM Models(chatGLM,LLaMa,etc..)
 
 The above frameworks have passed the test.
 
