@@ -12,27 +12,6 @@
 [![寒武纪 MLU](https://img.shields.io/badge/寒武纪-Mlu-blue)](docs/cambricon-mlu-support_cn.md)
 [![海光 DCU](https://img.shields.io/badge/海光-DCU-blue)](docs/hygon-dcu-support.md)
 
-
-## 目录
-
-- [简介](#简介)
-- [使用场景](#使用场景)
-- [安装要求](#安装要求)
-- [快速入门](#快速入门)
-  - [GPU节点准备](#GPU节点准备)
-  - [Kubernetes开启vGPU支持](#Kubernetes开启vGPU支持)
-  - [运行GPU任务](#运行GPU任务)
-- [调度策略](#调度策略)
-- [性能测试](#性能测试)
-- [功能](#功能)
-- [实验性功能](#实验性功能)
-- [已知问题](#已知问题)
-- [开发计划](#开发计划)
-- [测试](#测试)
-- [卸载](#卸载)
-- [问题反馈及代码贡献](#问题反馈及代码贡献)
-
-
 ## 简介
 
 异构算力虚拟化中间件HAMi满足了所有你对于管理异构算力集群所需要的能力，包括：
