@@ -74,6 +74,8 @@
 
 ## 快速入门
 
+### 准备节点
+
 <details> <summary> 配置 nvidia-container-toolkit </summary>
 
 ### GPU节点准备
@@ -184,6 +186,9 @@ $ helm uninstall vgpu -n kube-system
 $ helm repo update
 $ helm install vgpu vgpu -n kube-system
 ```
+
+> **注意:** *如果你没有清理完任务就进行热更新的话，正在运行的任务可能会出现段错误等报错.*
+
 </details>
 
 <details> <summary> 卸载 </summary>
@@ -192,9 +197,13 @@ $ helm install vgpu vgpu -n kube-system
 $ helm uninstall vgpu -n kube-system
 ```
 
+> **注意:** *卸载组件并不会使正在运行的任务失败.*
+
 </details>
 
-### 运行GPU任务
+### 提交任务
+
+<details> <summary> 任务样例 </summary>
 
 NVIDIA vGPUs 现在能透过资源类型`nvidia.com/gpu`被容器请求：
 
@@ -219,8 +228,15 @@ spec:
 
 现在你可以在容器执行`nvidia-smi`命令，然后比较vGPU和实际GPU显存大小的不同。
 
+> **注意:** *1. 如果你使用privileged字段的话，本任务将不会被调度，因为它可见所有的GPU，会对其它任务造成影响.*
+> 
+> *2. 不要设置nodeName字段，类似需求请使用nodeSelector.* 
 
-### 监控vGPU使用情况
+</details>
+
+### 监控：
+
+<details> <summary> 访问集群算力视图 </summary>
 
 调度器部署成功后，监控默认自动开启，你可以通过
 
@@ -232,11 +248,9 @@ http://{nodeip}:{monitorPort}/metrics
 
 grafana dashboard [示例](docs/dashboard_cn.md)
 
-> **注意** 节点上的vGPU状态只有在其使用vGPU后才会被统计W
+> **注意** 节点上的vGPU状态只有在其使用vGPU后才会被统计
 
-## 调度策略
-
-调度策略为，在保证显存和算力满足需求的GPU中，优先选择任务数最少的GPU执行任务，这样做可以使任务均匀分配到所有的GPU中
+</details>
 
 ## 性能测试
 
