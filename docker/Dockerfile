@@ -17,7 +17,6 @@ RUN wget https://cmake.org/files/v3.19/cmake-3.19.8-Linux-x86_64.tar.gz
 RUN tar -xf cmake-3.19.8-Linux-x86_64.tar.gz
 RUN cp /libvgpu/cmake-3.19.8-Linux-x86_64/bin/cmake /libvgpu/cmake-3.19.8-Linux-x86_64/bin/cmake3
 ENV PATH="/libvgpu/cmake-3.19.8-Linux-x86_64/bin:${PATH}"
-RUN rm -r ./build
 RUN apt-get -y install openssl libssl-dev
 RUN bash ./build.sh
 
