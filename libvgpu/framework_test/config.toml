@@ -1,0 +1,6 @@
+[params]
+dockerRegistry = "m7-ieg-pico-test01:5000"
+examplesPath = "/home/work/vgpu_multi/examples"
+vgpuPath = "/usr/local/vgpu"
+shmSize = "2147483648"
+

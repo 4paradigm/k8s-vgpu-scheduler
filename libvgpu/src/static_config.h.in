@@ -1,0 +1,9 @@
+#cmakedefine MULTIPROCESS_LIMIT_ENABLE
+#cmakedefine MEMORY_LIMIT_DEBUG
+#cmakedefine DLSYM_HOOK_ENABLE
+#cmakedefine DLSYM_HOOK_DEBUG
+#cmakedefine HOOK_MEMINFO_ENABLE
+#cmakedefine HOOK_NVML_ENABLE
+size_t GIT_HASH_@GIT_HASH@;
+size_t GIT_BRANCH_@GIT_BRANCH@;
+
