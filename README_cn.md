@@ -1,4 +1,4 @@
-![img](./HAMi.jpg){:width="400px"}
+<img src="https://github.com/4paradigm/k8s-vgpu-scheduler/blob/libopensource/HAMi.jpg" width="400px">
 
 # HAMi--异构算力虚拟化中间件
 
