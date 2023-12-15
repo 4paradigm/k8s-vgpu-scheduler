@@ -2,7 +2,7 @@ English version|[中文版](README_cn.md)
 
 <img src="https://github.com/4paradigm/k8s-vgpu-scheduler/blob/libopensource/HAMi.jpg" width="400px">
 
-# [b]H[/b]eterogeneous [b]A[/b]I Computing Virtualization [b]Mi[/b]ddleware
+# **H**eterogeneous **A**I Computing Virtualization **Mi**ddleware
 
 [![build status](https://github.com/4paradigm/k8s-vgpu-scheduler/actions/workflows/main.yml/badge.svg)](https://github.com/4paradigm/k8s-vgpu-scheduler/actions/workflows/main.yml)
 [![docker pulls](https://img.shields.io/docker/pulls/4pdosc/k8s-vgpu.svg)](https://hub.docker.com/r/4pdosc/k8s-vgpu)
