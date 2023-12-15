@@ -1,5 +1,7 @@
 English version|[中文版](README_cn.md)
 
+![img](./HAMi.jpg)
+
 # HAMi--Heterogeneous AI Computing Virtualization Middleware
 
 [![build status](https://github.com/4paradigm/k8s-vgpu-scheduler/actions/workflows/main.yml/badge.svg)](https://github.com/4paradigm/k8s-vgpu-scheduler/actions/workflows/main.yml)

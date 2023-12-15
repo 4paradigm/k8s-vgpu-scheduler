@@ -1,3 +1,5 @@
+![img](./HAMi.jpg)
+
 # HAMi--异构算力虚拟化中间件
 
 [![build status](https://github.com/4paradigm/k8s-vgpu-scheduler/actions/workflows/main.yml/badge.svg)](https://github.com/4paradigm/k8s-vgpu-scheduler/actions/workflows/build.yml)
