@@ -1,6 +1,6 @@
 English version|[中文版](README_cn.md)
 
-![img](./HAMi.jpg)
+![img](./HAMi.png)
 
 # HAMi--Heterogeneous AI Computing Virtualization Middleware
 

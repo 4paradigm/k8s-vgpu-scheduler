@@ -1,4 +1,4 @@
-![img](./HAMi.jpg){:width="400ptx" height="400ptx"}
+![img](./HAMi.png)
 
 # HAMi--异构算力虚拟化中间件
 
