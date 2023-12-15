@@ -1,4 +1,4 @@
-![img](./HAMi.png)
+![img](./HAMi.jpg)
 
 # HAMi--异构算力虚拟化中间件
 
