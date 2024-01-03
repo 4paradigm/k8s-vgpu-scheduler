@@ -178,7 +178,7 @@ int parse_cuda_visible_env() {
         } 
     }
     for (i=0;i<16;i++){
-        LOG_WARN("device %d -> %d",i,cuda_to_nvml_map[i]);
+        LOG_INFO("device %d -> %d",i,cuda_to_nvml_map[i]);
     }
     LOG_WARN("get default cuda from %s",getenv("CUDA_VISIBLE_DEVICES"));
     return count;
