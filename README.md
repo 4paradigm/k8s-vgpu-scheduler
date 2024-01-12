@@ -33,10 +33,6 @@ English version|[中文版](README_cn.md)
 ## Features
 
 - Hard Limit on Device Memory.
-- Allows partial device allocation by specifying device memory 
-- Hard Limit on streaming multiprocessor.
-- Allows partial device allocation by specifying device core usage
-- Zero changes to existing programs
 
 A simple demostration for Hard Limit:
 A task with the following resources.
@@ -49,6 +45,11 @@ A task with the following resources.
 will see 3G device memory inside container
 
 ![img](./imgs/hard_limit.jpg)
+
+- Allows partial device allocation by specifying device memory 
+- Hard Limit on streaming multiprocessor.
+- Allows partial device allocation by specifying device core usage
+- Zero changes to existing programs
 
 ## When to use
 
