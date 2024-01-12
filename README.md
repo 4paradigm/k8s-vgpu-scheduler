@@ -18,6 +18,8 @@ English version|[中文版](README_cn.md)
 
 ## Introduction
 
+![img](./imgs/example.jpg)
+
 **Heterogeneous AI Computing Virtualization Middleware(HAMI), once called(k8s-vGPU-scheduler) is an "all in one" chart to manage your Heterogeneous AI Computing Devices in k8s cluster**, it has everything you expect for, including:
 
 ***Device sharing***: Each task can allocate a portion of device instead of a whole device, thus a device can be shared among multiple tasks.
@@ -44,7 +46,9 @@ English version|[中文版](README_cn.md)
 4. Low utilization of device memory and computing units, such as running 10 tf-servings on one GPU.
 5. Situations that require a large number of small GPUs, such as teaching scenarios where one GPU is provided for multiple students to use, and the cloud platform that provides small GPU instance.
 
-## Prerequisites
+## Quick Start
+
+### Prerequisites
 
 The list of prerequisites for running the NVIDIA device plugin is described below:
 * NVIDIA drivers >= 440
@@ -55,9 +59,8 @@ The list of prerequisites for running the NVIDIA device plugin is described belo
 * kernel version >= 3.10
 * helm > 3.0
 
-## Quick Start
 
-###  Preparing your GPU Nodes 
+###  Preparing your GPU Nodes
 
 <details> <summary> Configure nvidia-container-toolkit </summary>
 
