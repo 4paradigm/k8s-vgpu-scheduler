@@ -38,12 +38,15 @@ English version|[中文版](README_cn.md)
 - Allows partial device allocation by specifying device core usage
 - Zero changes to existing programs
 
+A simple demostration for Hard Limit:
+A task with the following resources.
 ```
       resources:
         limits:
           nvidia.com/gpu: 1 # requesting 1 vGPU
           nvidia.com/gpumem: 3000 # Each vGPU contains 3000m device memory
 ```
+will see 3G device memory inside container
 ![img](./imgs/hard_limit.jpg)
 
 ## When to use

@@ -44,6 +44,16 @@
 - 允许通过指定算力使用比例来申请算力设备
 - 对已有程序零改动
 
+一个硬隔离的简单展示：
+一个使用以下方式定义的任务提交后
+```
+      resources:
+        limits:
+          nvidia.com/gpu: 1 # requesting 1 vGPU
+          nvidia.com/gpumem: 3000 # Each vGPU contains 3000m device memory
+```
+会只有3G可见显存
+![img](./imgs/hard_limit.jpg)
 
 ## 安装要求
 
