@@ -1,23 +1,23 @@
-## Benchmarks
+## 性能测试
 
-Three instances from ai-benchmark have been used to evaluate vGPU-device-plugin performance as follows
+在测试报告中，我们一共在下面五种场景都执行了ai-benchmark 测试脚本，并汇总最终结果：
 
-| Test Environment | description                                              |
+| 测试环境 | 环境描述                                              |
 | ---------------- | :------------------------------------------------------: |
 | Kubernetes version | v1.12.9                                                |
 | Docker  version    | 18.09.1                                                |
 | GPU Type           | Tesla V100                                             |
 | GPU Num            | 2                                                      |
 
-| Test instance |                         description                         |
-| ------------- | :---------------------------------------------------------: |
-| nvidia-device-plugin      |               k8s + nvidia k8s-device-plugin                |
-| vGPU-device-plugin        | k8s + VGPU k8s-device-plugin，without virtual device memory |
-| vGPU-device-plugin(virtual device memory) |  k8s + VGPU k8s-device-plugin，with virtual device memory   |
+| 测试名称 |                      测试用例                      |
+| -------- | :------------------------------------------------: |
+| Nvidia-device-plugin        |         k8s + nvidia官方k8s-device-plugin          |
+| vGPU-device-plugin        |      k8s + VGPU k8s-device-plugin，无虚拟显存      |
+| vGPU-device-plugin(virtual device memory)  | k8s + VGPU k8s-device-plugin，高负载，开启虚拟显存 |
 
-Test Cases:
+测试内容
 
-| test id |     case      |   type    |         params          |
+| test id |     名称      |   类型    |          参数           |
 | ------- | :-----------: | :-------: | :---------------------: |
 | 1.1     | Resnet-V2-50  | inference |  batch=50,size=346*346  |
 | 1.2     | Resnet-V2-50  | training  |  batch=20,size=346*346  |
@@ -30,20 +30,21 @@ Test Cases:
 | 5.1     |     LSTM      | inference | batch=100,size=1024*300 |
 | 5.2     |     LSTM      | training  | batch=10,size=1024*300  |
 
-Test Result: ![img](../imgs/benchmark_inf.png)
+测试结果： ![img](../imgs/benchmark_inf.png)
 
 ![img](../imgs/benchmark_train.png)
 
-To reproduce:
+测试步骤：
 
-1. install k8s-vGPU-scheduler，and configure properly
-2. run benchmark job
+1. 安装nvidia-device-plugin，并配置相应的参数
+2. 运行benchmark任务
 
 ```
 $ kubectl apply -f benchmarks/ai-benchmark/ai-benchmark.yml
 ```
 
-3. View the result by using kubctl logs
+3. 通过kubctl logs 查看结果
 
 ```
 $ kubectl logs [pod id]
+```
