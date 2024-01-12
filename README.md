@@ -38,6 +38,14 @@ English version|[中文版](README_cn.md)
 - Allows partial device allocation by specifying device core usage
 - Zero changes to existing programs
 
+```
+      resources:
+        limits:
+          nvidia.com/gpu: 1 # requesting 1 vGPU
+          nvidia.com/gpumem: 3000 # Each vGPU contains 3000m device memory
+```
+![img](./imgs/hard_limit.jpg)
+
 ## When to use
 
 1. Device sharing(or device virtualization) on kubernetes
