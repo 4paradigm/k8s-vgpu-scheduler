@@ -47,6 +47,7 @@ A task with the following resources.
           nvidia.com/gpumem: 3000 # Each vGPU contains 3000m device memory
 ```
 will see 3G device memory inside container
+
 ![img](./imgs/hard_limit.jpg)
 
 ## When to use

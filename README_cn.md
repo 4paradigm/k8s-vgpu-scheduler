@@ -53,6 +53,7 @@
           nvidia.com/gpumem: 3000 # Each vGPU contains 3000m device memory
 ```
 会只有3G可见显存
+
 ![img](./imgs/hard_limit.jpg)
 
 ## 安装要求
