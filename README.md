@@ -273,33 +273,22 @@ grafana dashboard [example](docs/dashboard.md)
 - Currently, task with filed "nodeName" can't be scheduled, please use "nodeSelector" instead
 - Currently, only computing tasks are supported, and video codec processing is not supported.
 
-## TODO
+## Roadmap
+
+Heterogeneous AI Computing device to support
+
+| Production  | manufactor | MemoryIsolation | CoreIsolation | MultiCard support |
+|-------------|------------|-----------------|---------------|-------------------|
+| GPU         | NVIDIA     | ✅              ｜ ✅       ｜ ✅                    ｜
+| MLU         | Cambricon  | ✅              | ❌        | ❌                    |
 
 - Support video codec processing
 - Support Multi-Instance GPUs (MIG)
-
-## Tests
-
-- TensorFlow 1.14.0/2.4.1
-- torch 1.1.0
-- mxnet 1.4.0
-- mindspore 1.1.1
-- LLM Models(chatGLM,LLaMa,etc..)
-
-The above frameworks have passed the test.
 
 ## Issues and Contributing
 
 * You can report a bug, a doubt or modify by [filing a new issue](https://github.com/4paradigm/k8s-vgpu-scheduler/issues/new)
 * If you want to know more or have ideas, you can participate in the [Discussions](https://github.com/4paradigm/k8s-device-plugin/discussions) and the [slack](https://join.slack.com/t/k8s-device-plugin/shared_invite/zt-oi9zkr5c-LsMzNmNs7UYg6usc0OiWKw) exchanges
-
-
-## Authors
-
-- Mengxuan Li (limengxuan@4paradigm.com)
-- Zhaoyou Pei (peizhaoyou@4paradigm.com)
-- Guangchuan Shi (shiguangchuan@4paradigm.com)
-- Zhao Zheng (zhengzhao@4paradigm.com)
 
 ## Contact
 
