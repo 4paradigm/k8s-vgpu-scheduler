@@ -257,27 +257,22 @@ grafana dashboard [示例](docs/dashboard_cn.md)
 
 ## 开发计划
 
+- 目前支持的异构算力设备及其对应的复用特性如下表所示
+
+| 产品  | 制造商 | 显存隔离 | 算力隔离 | 多卡支持 |
+|-------------|------------|-----------------|---------------|-------------------|
+| GPU         | NVIDIA     | ✅              | ✅            | ✅                |
+| MLU         | 寒武纪  | ✅              | ❌            | ❌                |
+| DCU         | 海光      | ✅              | ✅            | ❌                |
+| Ascend      | 华为     | 开发中     | 开发中   | ❌                |
+| GPU         | 天数智芯   | 开发中     | 开发中   | ❌                |
+| DPU         | 太初       | 开发中     | 开发中   | ❌                | 
 - 支持视频编解码处理
 - 支持Multi-Instance GPUs (MIG) 
 
-# 测试
-
-- TensorFlow 1.14.0/2.4.1
-- torch1.1.0
-- mxnet 1.4.0
-- mindspore 1.1.1
-- ChatGLM-6B
-
-以上框架均通过测试。
 
 ## 反馈和参与
 
 * bug、疑惑、修改欢迎提在 [Github Issues](https://github.com/4paradigm/k8s-vgpu-scheduler/issues/new)
 * 想了解更多或者有想法可以参与到[Discussions](https://github.com/4paradigm/k8s-device-plugin/discussions)和[slack](https://join.slack.com/t/k8s-device-plugin/shared_invite/zt-oi9zkr5c-LsMzNmNs7UYg6usc0OiWKw)交流
 
-## 作者
-
-- 李孟轩 (limengxuan@4paradigm.com)
-- 裴兆友 (peizhaoyou@4paradigm.com)
-- 石光川 (shiguangchuan@4paradigm.com)
-- 郑曌 (zhengzhao@4paradigm.com)
