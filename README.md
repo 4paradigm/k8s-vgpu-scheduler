@@ -279,7 +279,7 @@ Heterogeneous AI Computing device to support
 
 | Production  | manufactor | MemoryIsolation | CoreIsolation | MultiCard support |
 |-------------|------------|-----------------|---------------|-------------------|
-| GPU         | NVIDIA     | ✅              ｜ ✅           | ✅               ｜
+| GPU         | NVIDIA     | ✅             | ✅            | ✅                 |
 | MLU         | Cambricon  | ✅              | ❌        | ❌                    |
 
 - Support video codec processing
