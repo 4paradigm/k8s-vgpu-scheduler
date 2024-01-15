@@ -279,8 +279,12 @@ Heterogeneous AI Computing device to support
 
 | Production  | manufactor | MemoryIsolation | CoreIsolation | MultiCard support |
 |-------------|------------|-----------------|---------------|-------------------|
-| GPU         | NVIDIA     | ✅             | ✅            | ✅                 |
-| MLU         | Cambricon  | ✅              | ❌        | ❌                    |
+| GPU         | NVIDIA     | ✅              | ✅            | ✅                |
+| MLU         | Cambricon  | ✅              | ❌            | ❌                |
+| DCU         | Hygon      | ✅              | ✅            | ❌                |
+| Ascend      | Huawei     | In progress     | In progress   | ❌                |
+| GPU         | iluvatar   | In progress     | In progress   | ❌                |
+| DPU         | Teco       | In progress     | In progress   | ❌                | 
 
 - Support video codec processing
 - Support Multi-Instance GPUs (MIG)
