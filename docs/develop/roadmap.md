@@ -1,10 +1,10 @@
 # roadmap
 
-| feature            | description                                                                                                                            | Alpha release | Beta release | GA release |
+| feature            | description                                                                                                                            |  release |  | GA release |
 |--------------------|----------------------------------------------------------------------------------------------------------------------------------------|---------------|--------------|------------|
-| SpiderIppool       | ip settings                                                                                                                            | v0.2.0        | v0.4.0       | v0.6.0     |
-|                    | namespace affinity                                                                                                                     | v0.4.0        | v0.6.0       |            |
-|                    | application affinity                                                                                                                   | v0.4.0        | v0.6.0       |            |
+| Kubernetes schedule layer       | Support Resource Quota for vgpu-memory                                                                                                                            | v0.2.0        | v0.4.0       | v0.6.0     |
+|                    | Support Best-fit, idle-first,Numa-first Schedule Policy                                                                                                                     | v0.4.0        | v0.6.0       |            |
+|               sdf     |                                                                                                                    | v0.4.0        | v0.6.0       |            |
 |                    | multiple default ippool                                                                                                                | v0.6.0        |              |            |
 |                    | multusname affinity                                                                                                                    | v0.6.0        |              |            |
 |                    | nodename affinity                                                                                                                      | v0.6.0        | v0.6.0       |
