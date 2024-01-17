@@ -52,9 +52,11 @@ will see 3G device memory inside container
 - Imposes a hard limit on streaming multiprocessors.
 - Permits partial device allocation by specifying device core usage.
 - Requires zero changes to existing programs.
-- Support Several Heterogeneous AI Computing devices.
+
+## Architect
 
 ![img](./imgs/arch.png) 
+HAMi consists of several components, including a unified mutatingwebhook, a unified scheduler extender, different device-plugins and different in-container virtualization technics for each heterogeneous AI devices.
 
 ## Application Scenarios
 
