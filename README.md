@@ -30,7 +30,7 @@ English version|[中文版](README_cn.md)
 
 ***Easy to use***: You don't need to modify your task YAML to use our scheduler. All your jobs will be automatically supported after installation. Additionally, you can specify a resource name other than "nvidia.com/gpu" if you prefer.
 
-## Features
+## Major Features
 
 - Hard Limit on Device Memory.
 
@@ -52,8 +52,10 @@ will see 3G device memory inside container
 - Imposes a hard limit on streaming multiprocessors.
 - Permits partial device allocation by specifying device core usage.
 - Requires zero changes to existing programs.
+- Support Several Heterogeneous AI Computing devices.
+[!img](./imgs/arch.png) 
 
-## When to use
+## Application Scenarios
 
 1. Device sharing (or device virtualization) on Kubernetes.
 2. Scenarios where pods need to be allocated with specific device memory 3. usage or device cores.
