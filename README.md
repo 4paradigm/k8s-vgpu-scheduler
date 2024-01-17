@@ -53,7 +53,8 @@ will see 3G device memory inside container
 - Permits partial device allocation by specifying device core usage.
 - Requires zero changes to existing programs.
 - Support Several Heterogeneous AI Computing devices.
-[!img](./imgs/arch.png) 
+
+![img](./imgs/arch.png) 
 
 ## Application Scenarios
 
