@@ -1,6 +1,6 @@
 English version|[中文版](README_cn.md)
 
-<img src="https://github.com/4paradigm/k8s-vgpu-scheduler/blob/libopensource/HAMi.jpg" width="100px">
+<img src="https://github.com/4paradigm/k8s-vgpu-scheduler/blob/libopensource/HAMi.jpg" width="200px">
 
 # Heterogeneous AI Computing Virtualization Middleware
 

@@ -1,4 +1,4 @@
-<img src="https://github.com/4paradigm/k8s-vgpu-scheduler/blob/libopensource/HAMi.jpg" width="100px">
+<img src="https://github.com/4paradigm/k8s-vgpu-scheduler/blob/libopensource/HAMi.jpg" width="200px">
 
 # HAMi--异构算力虚拟化中间件
 
