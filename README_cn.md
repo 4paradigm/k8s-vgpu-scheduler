@@ -16,7 +16,7 @@
 
 ## 简介
 
-![img](./imgs/example.png)
+!<img src="./imgs/example.png" width = "600" /> 
 
 异构算力虚拟化中间件HAMi满足了所有你对于管理异构算力集群所需要的能力，包括：
 
