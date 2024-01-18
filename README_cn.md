@@ -1,4 +1,4 @@
-<img src="https://github.com/4paradigm/k8s-vgpu-scheduler/blob/libopensource/HAMi.jpg" width="400px">
+<img src="https://github.com/4paradigm/k8s-vgpu-scheduler/blob/libopensource/HAMi.jpg" width="100px">
 
 # HAMi--异构算力虚拟化中间件
 
@@ -35,6 +35,12 @@
 3. 在多个异构算力节点组成的集群中，任务需要根据自身的显卡需求分配到合适的节点执行。
 4. 显存、计算单元利用率低的情况，如在一张GPU卡上运行10个tf-serving。
 5. 需要大量小显卡的情况，如教学场景把一张GPU提供给多个学生使用、云平台提供小GPU实例。
+
+## 产品设计
+
+!<img src="./imgs/arch.png" width = "600" /> 
+
+HAMi 包含以下几个组件，一个统一的mutatingwebhook，一个统一的调度器，以及针对各种不同的异构算力设备对应的设备插件和容器内的控制组件，整体的架构特性如上图所示。
 
 ## 产品特性
 
