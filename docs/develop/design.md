@@ -1,6 +1,6 @@
 # Design
 
-!<img src="../imgs/arch.png" width = "800" /> 
+!<img src="../../imgs/arch.png" width = "800" /> 
 
 The architect of HAMi is shown in the figure above, It is organized in the form of "chart".
 
