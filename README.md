@@ -55,7 +55,7 @@ will see 3G device memory inside container
 
 ## Architect
 
-![img](./imgs/arch.png) 
+![img](./imgs/arch.jpg) 
 HAMi consists of several components, including a unified mutatingwebhook, a unified scheduler extender, different device-plugins and different in-container virtualization technics for each heterogeneous AI devices.
 
 ## Application Scenarios
