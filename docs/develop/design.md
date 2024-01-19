@@ -23,6 +23,6 @@ Please note that, the DP used here is a customized version, you need to install 
 
 The implementation of in-container hard limit is different for diffent devices. For example, HAMi-Core is responsible for NVIDIA devices. libnvidia-control.so is responsible for iluvatar devices, etc. HAMi needs to pass the correct environment variables in order for it to operate.
 
-!<img src="./imgs/flowchart.jpeg" width = "800" /> 
+!<img src="./imgs/flowchart.jpeg" width = "400" /> 
 
 In summary, The flowchart of pod is descirbed as the figure above.
