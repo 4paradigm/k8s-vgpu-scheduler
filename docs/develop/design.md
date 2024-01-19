@@ -1,6 +1,6 @@
 # Design
 
-!<img src="../../imgs/arch.png" width = "800" /> 
+<img src="../../imgs/arch.png" width = "800" /> 
 
 The architect of HAMi is shown in the figure above, It is organized in the form of "chart".
 
@@ -23,6 +23,6 @@ Please note that, the DP used here is a customized version, you need to install 
 
 The implementation of in-container hard limit is different for diffent devices. For example, HAMi-Core is responsible for NVIDIA devices. libnvidia-control.so is responsible for iluvatar devices, etc. HAMi needs to pass the correct environment variables in order for it to operate.
 
-!<img src="./imgs/flowchart.jpeg" width = "400" /> 
+<img src="./imgs/flowchart.jpeg" width = "600" /> 
 
 In summary, The flowchart of pod is descirbed as the figure above.
