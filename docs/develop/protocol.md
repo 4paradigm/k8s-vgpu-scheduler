@@ -2,7 +2,7 @@
 
 ## Device Register
 
-<img src="./imgs/protocol_register.png" width = "800" /> 
+<img src="./imgs/protocol_register.png" width = "600" /> 
 
 HAMi needs to know the spec of each AI devices in the cluster in order to schedule properly. During device registration, device-plugin needs to keep patching the spec of each device into node annotations every 30 seconds, in the format of the following:
 
@@ -38,6 +38,8 @@ If HAMi.sh/node-handshake annotations remains in "Requesting_xxxx" and {schedule
  
 
 ## Schedule Decision
+
+<img src="./imgs/protocol_pod.png" width = "600" /> 
 
 HAMi scheduler needs to patch schedule decisions into pod annotations, in the format of the following:
 
