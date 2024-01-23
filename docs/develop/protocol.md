@@ -2,6 +2,8 @@
 
 ## Device Register
 
+<img src="./imgs/protocol_register.png" width = "800" /> 
+
 HAMi needs to know the spec of each AI devices in the cluster in order to schedule properly. During device registration, device-plugin needs to keep patching the spec of each device into node annotations every 30 seconds, in the format of the following:
 
 ```
