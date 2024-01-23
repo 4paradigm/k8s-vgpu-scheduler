@@ -39,7 +39,7 @@ If HAMi.sh/node-handshake annotations remains in "Requesting_xxxx" and {schedule
 
 ## Schedule Decision
 
-<img src="./imgs/protocol_pod.png" width = "600" /> 
+<img src="./imgs/protocol_pod.png" width = "400" /> 
 
 HAMi scheduler needs to patch schedule decisions into pod annotations, in the format of the following:
 
