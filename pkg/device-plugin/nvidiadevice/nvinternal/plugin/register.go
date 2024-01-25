@@ -24,7 +24,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/NVIDIA/gpu-monitoring-tools/bindings/go/nvml"
+	"github.com/NVIDIA/go-nvml/pkg/nvml"
 	"k8s.io/klog/v2"
 
 	"4pd.io/k8s-vgpu/pkg/api"
@@ -38,7 +38,7 @@ func (r *NvidiaDevicePlugin) getNumaInformation(idx int) (int, error) {
 	if err != nil {
 		log.Fatalf("cmd.Run() failed with %s\n", err)
 	}
-	klog.InfoS("nvidia-smi topo -m ouput", "result", string(out))
+	klog.V(5).InfoS("nvidia-smi topo -m ouput", "result", string(out))
 	return parseNvidiaNumaInfo(idx, string(out))
 }
 
@@ -53,7 +53,7 @@ func parseNvidiaNumaInfo(idx int, nvidiaTopoStr string) (int, error) {
 		// Many values are separated by two tabs, but this actually represents 5 values instead of 7
 		// So add logic to remove multiple tabs
 		words := strings.Split(strings.ReplaceAll(val, "\t\t", "\t"), "\t")
-		klog.InfoS("parseNumaInfo", "words", words)
+		klog.V(5).InfoS("parseNumaInfo", "words", words)
 		// get numa affinity column number
 		if index == 0 {
 			for columnIndex, headerVal := range words {
@@ -70,15 +70,15 @@ func parseNvidiaNumaInfo(idx int, nvidiaTopoStr string) (int, error) {
 
 				// We need to get the value of the NUMA Affinity column, but their column indexes are inconsistent,
 				// so we need to get the index first and then get the value.
-				if headerVal == "NUMA Affinity" {
+				if strings.Contains(headerVal, "NUMA Affinity") {
 					// The header is one column less than the actual row.
-					numaAffinityColumnIndex = columnIndex + 1
+					numaAffinityColumnIndex = columnIndex
 					continue
 				}
 			}
 			continue
 		}
-		klog.InfoS("nvidia-smi topo -m row output", "row output", words, "length", len(words))
+		klog.V(5).InfoS("nvidia-smi topo -m row output", "row output", words, "length", len(words))
 		if strings.Contains(words[0], fmt.Sprint(idx)) {
 			if words[numaAffinityColumnIndex] == "N/A" {
 				klog.InfoS("current card has not established numa topology", "gpu row info", words, "index", idx)
@@ -99,21 +99,36 @@ func (r *NvidiaDevicePlugin) getApiDevices() *[]*api.DeviceInfo {
 	res := make([]*api.DeviceInfo, 0, len(devs))
 	idx := 0
 	for idx < len(devs) {
-		ndev, err := nvml.NewDevice(uint(idx))
+		ndev, ret := nvml.DeviceGetHandleByIndex(idx)
+		//ndev, err := nvml.NewDevice(uint(idx))
 		//klog.V(3).Infoln("ndev type=", ndev.Model)
-		if err != nil {
-			klog.Errorln("nvml new device by uuid error id=", ndev.UUID, "err=", err.Error())
+		if ret != nvml.SUCCESS {
+			klog.Errorln("nvml new device by index error idx=", idx, "err=", ret)
 			panic(0)
-		} else {
-			klog.V(3).Infoln("nvml registered device id=", ndev.UUID, "memory=", *ndev.Memory, "type=", *ndev.Model)
 		}
-		registeredmem := int32(*ndev.Memory)
+		memory, ret := ndev.GetMemoryInfo_v2()
+		if ret != nvml.SUCCESS {
+			klog.Error("nvml get memory error ret=", ret)
+			panic(0)
+		}
+		UUID, ret := ndev.GetUUID()
+		if ret != nvml.SUCCESS {
+			klog.Error("nvml get uuid error ret=", ret)
+			panic(0)
+		}
+		Model, ret := ndev.GetName()
+		if ret != nvml.SUCCESS {
+			klog.Error("nvml get name error ret=", ret)
+			panic(0)
+		}
+
+		registeredmem := int32(memory.Total / 1024 / 1024)
 		if *util.DeviceMemoryScaling != 1 {
 			registeredmem = int32(float64(registeredmem) * *util.DeviceMemoryScaling)
 		}
 		health := true
 		for _, val := range devs {
-			if strings.Compare(val.ID, ndev.UUID) == 0 {
+			if strings.Compare(val.ID, UUID) == 0 {
 				// when NVIDIA-Tesla P4, the device info is : ID:GPU-e290caca-2f0c-9582-acab-67a142b61ffa,Health:Healthy,Topology:nil,
 				// it is more reasonable to think of healthy as case-insensitive
 				if strings.EqualFold(val.Health, "healthy") {
@@ -129,15 +144,16 @@ func (r *NvidiaDevicePlugin) getApiDevices() *[]*api.DeviceInfo {
 			klog.ErrorS(err, "failed to get numa information", "idx", idx)
 		}
 		res = append(res, &api.DeviceInfo{
-			Id:      ndev.UUID,
+			Id:      UUID,
 			Count:   int32(*util.DeviceSplitCount),
 			Devmem:  registeredmem,
 			Devcore: int32(*util.DeviceCoresScaling * 100),
-			Type:    fmt.Sprintf("%v-%v", "NVIDIA", *ndev.Model),
+			Type:    fmt.Sprintf("%v-%v", "NVIDIA", Model),
 			Numa:    numa,
 			Health:  health,
 		})
 		idx++
+		klog.V(3).Infoln("nvml registered device id=", idx, "memory=", memory, "type=", Model)
 	}
 	return &res
 }

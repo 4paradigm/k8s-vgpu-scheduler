@@ -1,5 +1,8 @@
-ARG GOLANG_IMAGE=golang:1.19-bullseye
+
 ARG NVIDIA_IMAGE=nvidia/cuda:12.2.0-devel-ubuntu20.04
+ARG GOLANG_IMAGE=golang:1.21-bullseye
+FROM $GOLANG_IMAGE AS build
+
 
 FROM $GOLANG_IMAGE AS GOBUILD
 ADD . /k8s-vgpu

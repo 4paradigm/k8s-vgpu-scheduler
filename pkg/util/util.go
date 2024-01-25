@@ -62,7 +62,7 @@ func GetPendingPod(node string) (*v1.Pod, error) {
 			}
 		}
 	}
-	return nil, nil
+	return nil, fmt.Errorf("no binding pod found on node %s", node)
 }
 
 func DecodeNodeDevices(str string) ([]*api.DeviceInfo, error) {
@@ -103,7 +103,7 @@ func EncodeNodeDevices(dlist []*api.DeviceInfo) string {
 	for _, val := range dlist {
 		tmp += val.Id + "," + strconv.FormatInt(int64(val.Count), 10) + "," + strconv.Itoa(int(val.Devmem)) + "," + strconv.Itoa(int(val.Devcore)) + "," + val.Type + "," + strconv.Itoa(val.Numa) + "," + strconv.FormatBool(val.Health) + ":"
 	}
-	klog.V(3).Infoln("Encoded node Devices", tmp)
+	klog.V(6).Infoln("Encoded node Devices", tmp)
 	return tmp
 }
 
