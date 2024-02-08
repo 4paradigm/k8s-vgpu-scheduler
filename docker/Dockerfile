@@ -20,7 +20,6 @@ COPY ./LICENSE /k8s-vgpu/LICENSE
 COPY --from=GOBUILD /k8s-vgpu/bin /k8s-vgpu/bin
 COPY ./docker/entrypoint.sh /k8s-vgpu/bin/entrypoint.sh
 COPY ./lib /k8s-vgpu/lib
-COPY --from=NVBUILD /libvgpu/build/libvgpu.so /k8s-vgpu/lib/nvidia/
 COPY ./lib/mlu/cntopo /usr/bin/
 COPY ./lib/mlu/libcndev.so /usr/lib/
 
