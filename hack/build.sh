@@ -26,7 +26,7 @@ export GOLANG_IMAGE="golang:1.21-bullseye"
 export NVIDIA_IMAGE="nvidia/cuda:12.2.0-devel-ubuntu20.04"
 export DEST_DIR="/usr/local"
 
-IMAGE=${IMAGE-"projecthami/hami"}
+IMAGE=${IMAGE-"4pdosc/k8s-vdevice"}
 
 function go_build() {
   [[ -z "$J" ]] && J=$(nproc | awk '{print int(($0 + 1)/ 2)}')
