@@ -3,6 +3,24 @@ entries:
   hami:
   - apiVersion: v2
     appVersion: 0.0.2
+    created: "2024-02-08T07:03:00.400984408Z"
+    description: Heterogeneous AI Computing Virtualization Middleware
+    digest: ea0502b4161d4464aba03ffed7a8a74172d8ddcd958901e82d2f40abbf8488a8
+    keywords:
+    - vgpu
+    - gpu
+    kubeVersion: '>= 1.16.0'
+    maintainers:
+    - email: limengxuan@4paradigm.com
+      name: limengxuan
+    name: hami
+    type: application
+    urls:
+    - https://4paradigm.github.io/k8s-vgpu-scheduler/hami-2.0.0.tgz
+    version: 2.0.0
+  vgpu:
+  - apiVersion: v2
+    appVersion: 0.0.2
     created: "2024-02-08T06:58:34.276613775Z"
     description: Heterogeneous AI Computing Virtualization Middleware
     digest: aca31abfdaae1830a9ae38984796dcde487c7c5454aca375cb7aaed562fa7653
@@ -18,4 +36,4 @@ entries:
     urls:
     - https://4paradigm.github.io/k8s-vgpu-scheduler/vgpu-2.0.0.tgz
     version: 2.0.0
-generated: "2024-02-08T06:58:34.274974036Z"
+generated: "2024-02-08T07:03:00.399916093Z"
