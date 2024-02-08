@@ -27,18 +27,6 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
         uses: actions/checkout@v2
 
-      - name: Checkout submodule
-        uses: Mushus/checkout-submodule@v1.0.1
-        with:
-          basePath: # optional, default is .
-          submodulePath: libvgpu 
-                
-
-      - name: Setup Go environment
-        uses: actions/setup-go@v5.0.0
-        with:
-            go-version: 1.21
-
       - name: Get branch name
         uses: nelonoel/branch-name@v1.0.1
      
@@ -56,11 +44,6 @@ jobs:
         id: buildx
         uses: docker/setup-buildx-action@v1
       
-      - name: Setup protoc
-        # You may pin to the exact commit or the version.
-        # uses: arduino/setup-protoc@64c0c85d18e984422218383b81c52f8b077404d3
-        uses: arduino/setup-protoc@v1.1.2
-
       - run: make tidy
         # run: make proto
       - run: SHORT_VERSION="${BRANCH_NAME}" bash ./hack/build.sh
