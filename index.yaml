@@ -13,9 +13,9 @@ entries:
     maintainers:
     - email: limengxuan@4paradigm.com
       name: limengxuan
-    name: hami
+    name: vgpu
     type: application
     urls:
-    - https://4paradigm.github.io/k8s-vgpu-scheduler/hami-2.0.0.tgz
+    - https://4paradigm.github.io/k8s-vgpu-scheduler/vgpu-2.0.0.tgz
     version: 2.0.0
 generated: "2024-02-08T06:58:34.274974036Z"
