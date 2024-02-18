@@ -21,9 +21,9 @@ entries:
   vgpu:
   - apiVersion: v2
     appVersion: 0.0.2
-    created: "2024-02-08T06:58:34.276613775Z"
+    created: "2024-02-18T11:09:44.839010932Z"
     description: Heterogeneous AI Computing Virtualization Middleware
-    digest: aca31abfdaae1830a9ae38984796dcde487c7c5454aca375cb7aaed562fa7653
+    digest: 52bcad95c73b6a50e39371c147467101e835a46f6604beec10c1bf99b5ffa521
     keywords:
     - vgpu
     - gpu
@@ -36,4 +36,4 @@ entries:
     urls:
     - https://4paradigm.github.io/k8s-vgpu-scheduler/vgpu-2.0.0.tgz
     version: 2.0.0
-generated: "2024-02-18T11:03:24.053240041Z"
+generated: "2024-02-18T11:09:44.837638439Z"
