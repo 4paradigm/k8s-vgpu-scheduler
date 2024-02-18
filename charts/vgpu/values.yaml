@@ -51,7 +51,7 @@ scheduler:
       - --leader-elect=false
       - -v=4
   extender:
-    image: "projecthami/hami"
+    image: "4pdosc/k8s-vdevice"
     imagePullPolicy: IfNotPresent
     extraArgs:
       - --debug
@@ -87,9 +87,8 @@ scheduler:
     annotations: {}
 
 devicePlugin:
-  image: "projecthami/hami"
-  
-  monitorimage: "projecthami/hami"
+  image: "4pdosc/k8s-vdevice"
+  monitorimage: "4pdosc/k8s-vdevice"
   monitorctrPath: /usr/local/vgpu/containers
   imagePullPolicy: IfNotPresent
   deviceSplitCount: 10
