@@ -320,14 +320,14 @@ func (plugin *NvidiaDevicePlugin) Allocate(ctx context.Context, reqs *pluginapi.
 			responses.ContainerResponses = append(responses.ContainerResponses, response)
 		} else {
 			currentCtr, devreq, err := util.GetNextDeviceRequest(nvidia.NvidiaGPUDevice, *current)
-			klog.Infoln("deviceAllocateFromAnnotation=", devreq)
+			klog.InfoS("deviceAllocateFromAnnotation", devreq)
 			if err != nil {
 				device.PodAllocationFailed(nodename, current)
 				return &pluginapi.AllocateResponse{}, err
 			}
 			if len(devreq) != len(reqs.ContainerRequests[idx].DevicesIDs) {
 				device.PodAllocationFailed(nodename, current)
-				return &pluginapi.AllocateResponse{}, errors.New("device number not matched")
+				return &pluginapi.AllocateResponse{}, errors.New("device allocate number not matched")
 			}
 			response, err := plugin.getAllocateResponse(util.GetContainerDeviceStrArray(devreq))
 			if err != nil {
