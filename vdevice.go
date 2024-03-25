@@ -33,7 +33,7 @@ type VDevice struct {
 }
 
 // Device2VDevice device to virtual device
-func Device2VDevice(devices []*Device) []*VDevice {
+func Device2VDevice(devices []*Device, mul int) []*VDevice {
 	var vdevices []*VDevice
 	for _, d := range devices {
 		log.Println("uuid=", d.ID)
@@ -47,7 +47,7 @@ func Device2VDevice(devices []*Device) []*VDevice {
 		dev, err := nvml.NewDeviceByUUID(d.ID)
 		check(err)
 		memory := uint64(float64(*dev.Memory) * deviceMemoryScalingFlag / float64(deviceSplitCountFlag))
-		for i := uint(0); i < deviceSplitCountFlag; i++ {
+		for i := uint(0); i < uint(mul); i++ {
 			vd := &VDevice{Device: d.Device, dev: d, memory: memory}
 			vd.ID = fmt.Sprintf("%v-%v", d.ID, i)
 			vd.memory = memory

@@ -9,7 +9,6 @@ spec:
     name: pod1-ctr
     command: ["sleep"]
     args: ["100000"]
-
     resources:
       limits:
-        nvidia.com/gpu: 1
+        teco.com/vgpu: 1

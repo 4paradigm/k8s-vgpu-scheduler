@@ -32,6 +32,7 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	v1 "k8s.io/api/core/v1"
+	"k8s.io/klog/v2"
 	pluginapi "k8s.io/kubelet/pkg/apis/deviceplugin/v1beta1"
 
 	"k8s.io/apimachinery/pkg/api/resource"
@@ -99,7 +100,11 @@ func (m *NvidiaDevicePlugin) initialize() {
 	m.cachedDevices = m.Devices()
 	log.Println("migstrategy=", m.migStrategy)
 	if strings.Compare(m.migStrategy, "none") == 0 {
-		m.vDevices = Device2VDevice(m.cachedDevices)
+		if strings.Contains(m.resourceName, "card") {
+			m.vDevices = Device2VDevice(m.cachedDevices, 1)
+		} else {
+			m.vDevices = Device2VDevice(m.cachedDevices, 4)
+		}
 	}
 	if enableLegacyPreferredFlag && m.allocatePolicy != nil {
 		deviceIDs := make([]string, len(m.vDevices))
@@ -413,6 +418,8 @@ func (m *NvidiaDevicePlugin) Allocate(ctx context.Context, reqs *pluginapi.Alloc
 	}
 	addnum := 0
 	for reqidx, req := range reqs.ContainerRequests {
+		klog.Infoln("-=-=-=-req=", req.DevicesIDs)
+		continue
 		ctrname := ""
 		if len(monitorMode) > 0 {
 			for {
@@ -505,7 +512,7 @@ func (m *NvidiaDevicePlugin) Allocate(ctx context.Context, reqs *pluginapi.Alloc
 		if deviceMemoryScalingFlag > 1 {
 			response.Envs["CUDA_OVERSUBSCRIBE"] = "true"
 		}
-		
+
 		//response.Annotations = make(map[string]string)
 		//response.Annotations["CUDA-DEVICE-MEMORY-SHARED-CACHE"] = timestr
 		response.Mounts = append(response.Mounts,
@@ -516,11 +523,11 @@ func (m *NvidiaDevicePlugin) Allocate(ctx context.Context, reqs *pluginapi.Alloc
 			&pluginapi.Mount{ContainerPath: "/usr/local/vgpu/pciinfo.vgpu",
 				HostPath: os.Getenv("PCIBUSFILE"), ReadOnly: true},
 			&pluginapi.Mount{ContainerPath: "/usr/bin/vgpuvalidator",
-				HostPath: "/usr/local/vgpu/vgpuvalidator",ReadOnly:true},
+				HostPath: "/usr/local/vgpu/vgpuvalidator", ReadOnly: true},
 			&pluginapi.Mount{ContainerPath: "/vgpu",
-				HostPath: "/usr/local/vgpu/license",ReadOnly:true},
-			)
-		fmt.Println("mounts=",response.Mounts)
+				HostPath: "/usr/local/vgpu/license", ReadOnly: true},
+		)
+		fmt.Println("mounts=", response.Mounts)
 		responses.ContainerResponses = append(responses.ContainerResponses, &response)
 
 		if verboseFlag > 5 {

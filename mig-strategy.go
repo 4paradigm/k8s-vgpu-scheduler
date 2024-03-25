@@ -62,7 +62,13 @@ type migStrategyMixed struct{}
 func (s *migStrategyNone) GetPlugins() []*NvidiaDevicePlugin {
 	return []*NvidiaDevicePlugin{
 		NewNvidiaDevicePlugin(
-			"nvidia.com/gpu",
+			"teco.com/card",
+			NewGpuDeviceManager(false), // Enumerate device even if MIG enabled
+			"NVIDIA_VISIBLE_DEVICES",
+			gpuallocator.NewBestEffortPolicy(),
+			pluginapi.DevicePluginPath+"nvidia-gpu.sock"),
+		NewNvidiaDevicePlugin(
+			"teco.com/cores",
 			NewGpuDeviceManager(false), // Enumerate device even if MIG enabled
 			"NVIDIA_VISIBLE_DEVICES",
 			gpuallocator.NewBestEffortPolicy(),
