@@ -13,7 +13,7 @@
 # limitations under the License.
 
 ARG CUDA_IMAGE=cuda
-FROM nvcr.io/nvidia/${CUDA_IMAGE}:11.2.1-base-ubuntu20.04 as build
+FROM ubuntu:18.04 as build
 
 RUN rm -rf /etc/apt/sources.list.d/cuda.list /etc/apt/sources.list.d/nvidia-ml.list
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -38,7 +38,7 @@ RUN export CGO_LDFLAGS_ALLOW='-Wl,--unresolved-symbols=ignore-in-object-files' &
 
 
 ARG CUDA_IMAGE=cuda
-FROM nvcr.io/nvidia/${CUDA_IMAGE}:11.2.1-base-ubuntu20.04
+FROM ubuntu:18.04
 
 RUN apt-get update; apt-get install -y --no-install-recommends \
         g++ \

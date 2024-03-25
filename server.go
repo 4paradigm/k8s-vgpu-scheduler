@@ -227,7 +227,9 @@ func (m *NvidiaDevicePlugin) Allocate(ctx context.Context, r *pluginapi.Allocate
 					HostPath: "/usr/local/vgpu/vgpuvalidator", ReadOnly: true},
 				&pluginapi.Mount{ContainerPath: "/vgpu",
 					HostPath: "/usr/local/vgpu/license", ReadOnly: true},
-				)
+				&pluginapi.Mount{ContainerPath: "/tmp/vgpulock",
+					HostPath: "/tmp/vgpulock", ReadOnly: false},
+			)
 			if verboseFlag > 5 {
 				log.Printf("Debug: allocate request %v, response %v\n",
 					r.DevicesIDs, deviceIDs)
